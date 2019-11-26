@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.maintain.mapper.ReplacePartMapper" >
+
+<select id="selectReplacePart" parameterType="int" resultType="com.jili.maintain.po.ReplacePart">
+ 		select * from replacepart where mid =#{id}
+</select>
+<insert id="insertReplacePart" parameterType="com.jili.maintain.po.ReplacePart">
+	insert into replacepart values(id,#{mid},#{replaceName},#{replaceOld},#{replaceNew},#{model},#{num},#{factory})
+</insert>
+<delete id="replacepartDel" parameterType="java.lang.Integer">
+ delete  from replacepart  where id =#{id} 
+</delete>
+<select id="selectReplaceparByPrimaryKey" parameterType="int" resultType="com.jili.maintain.po.ReplacePart">
+ 		select * from replacepart where id =#{id}
+</select>
+<update id="editReplacePartSumbit" parameterType="com.jili.maintain.po.ReplacePart">
+      update replacepart 
+<set>
+  <if test="replaceName != null"> replaceName = #{replaceName}, </if>
+  <if test="replaceOld != null"> replaceOld = #{replaceOld,jdbcType=CHAR}, </if>
+  <if test="replaceNew != null"> replaceNew = #{replaceNew,jdbcType=VARCHAR}, </if>
+  <if test="model != null"> model = #{model,jdbcType=VARCHAR}, </if>
+  <if test="num != null"> num = #{num,jdbcType=VARCHAR}, </if>
+  <if test="factory != null"> factory = #{factory,jdbcType=VARCHAR}, </if>
+
+</set>
+    where id = #{id} 
+</update>
+</mapper>

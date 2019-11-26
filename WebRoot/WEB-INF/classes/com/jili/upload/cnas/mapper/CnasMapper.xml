@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.cnas.mapper.CnasMapper" >
+<sql id="select">
+		
+		<if test="wname!=null and wname!=''">
+			and wname like '%${wname}%'
+		</if>
+		<if test="wnum!=null and wnum!=''">
+			and wnum like '%${wnum}%'
+		</if>	
+	</sql>
+ 	<select id="selectCnasQuality" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		 wtype = '质量手册'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectCnasProcess" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		wtype = '程序文件'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectCnasGuidance" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		wtype = '作业指导书'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectCnasFour" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		wtype = '四级表单'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectCnasFirst" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		wstate = '讨论版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countCnasFirst" parameterType="com.jili.upload.cnas.po.Cnas" resultType="int">
+ 		select count(id) from cnas
+ 		<where>
+ 		wstate = '讨论版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	 	<select id="selectCnasSecond" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		wstate = '在用版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countCnasSecond" parameterType="com.jili.upload.cnas.po.Cnas" resultType="int">
+ 		select count(id) from cnas
+ 		<where>
+ 		wstate = '在用版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectCnasThird" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas
+ 		<where>
+ 		wstate = '作废版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countCnasThird" parameterType="com.jili.upload.cnas.po.Cnas" resultType="int">
+ 		select count(id) from cnas
+ 		<where>
+ 		wstate = '作废版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+	<insert id="insertCnas" parameterType="com.jili.upload.cnas.po.Cnas">
+	insert into cnas values(#{id},#{wtype},#{wname},#{wnum},#{wtime},#{wversion},#{wstate},#{uploaduuid})
+    </insert> 
+    <select id="selectById" parameterType="com.jili.upload.cnas.po.Cnas" resultType="com.jili.upload.cnas.po.Cnas">
+ 		select * from cnas where id =#{id}	
+ 	</select>
+ 	<update id="editCnasSubmit" parameterType="com.jili.upload.cnas.po.Cnas">
+      update cnas 
+<set>
+  <if test="wtype != null"> wtype = #{wtype,jdbcType=VARCHAR}, </if>
+  <if test="wname != null"> wname = #{wname}, </if>
+  <if test="wnum != null"> wnum = #{wnum,jdbcType=CHAR}, </if>
+  <if test="wtime != null"> wtime = #{wtime}, </if>
+  <if test="wversion != null"> wversion = #{wversion,jdbcType=VARCHAR}, </if>
+  <if test="wstate != null"> wstate = #{wstate,jdbcType=VARCHAR}, </if>
+  <if test="uploaduuid != null"> uploaduuid = #{uploaduuid}, </if>
+  
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+</mapper>

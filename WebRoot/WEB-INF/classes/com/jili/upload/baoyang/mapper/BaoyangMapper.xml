@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.baoyang.mapper.BaoyangMapper" >
+
+
+<insert id="insertBaoyang" parameterType="com.jili.upload.baoyang.po.Baoyang">
+	insert into baoyang values(#{id},#{bid},#{btjm},#{bdepartment},#{bpeople},#{btime},#{uploadname},#{uploaduuid})
+</insert>
+<select id="sumBaoyang" parameterType="int" resultType="com.jili.upload.baoyang.po.Baoyang">
+ 		
+ 		select * from (
+select sum(if(isnull(uploadname),0,1)) as sumBaoyangOver ,left(btime,7) as mouth 
+						from baoyang where TO_DAYS(NOW()) - TO_DAYS(btime) &lt;= 365 
+GROUP BY left(btime,7)) a
+left join  
+(select sum(if(isnull(uploadname),1,0)) as sumBaoyang ,left(btime,7) as mouth 
+						from baoyang where TO_DAYS(NOW()) - TO_DAYS(btime) &lt;= 365 
+GROUP BY left(btime,7)) b on a.mouth = b.mouth	
+ 		
+ 		
+ 		
+</select>
+<select id="selectBaoyang" parameterType="com.jili.upload.baoyang.po.Baoyang" resultType="com.jili.upload.baoyang.po.Baoyang">
+ 		select * from baoyang	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 			
+</select>
+<select id="countBaoyang" parameterType="com.jili.upload.baoyang.po.Baoyang" resultType="int">
+ 		select count(id) from baoyang	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 			
+</select>
+	<sql id="select">
+		<if test="btjm!=null and btjm!=''">
+			btjm like '%${btjm}%'
+		</if>
+		<if test="bdepartment!=null and bdepartment!=''">
+			and bdepartment like '%${bdepartment}%'
+		</if>
+		<if test="bpeople!=null and bpeople!='' ">  
+         and bpeople like '%${bpeople}%'    
+        </if>      
+        <if test="startTime!=null and startTime!='' ">  
+         and btime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and btime&lt;=#{endTime}
+        </if> 
+	</sql>
+<select id="selectBaoyangSecond" parameterType="com.jili.upload.baoyang.po.Baoyang" resultType="com.jili.upload.baoyang.po.Baoyang">
+ 		select * from baoyang	where uploadname is null
+</select>	
+<select id="countBaoyangSecond" parameterType="com.jili.upload.baoyang.po.Baoyang" resultType="int">
+ 		select count(id) from baoyang	where uploadname is null
+</select>
+<select id="selectBaoyangById" parameterType="int" resultType="com.jili.upload.baoyang.po.Baoyang">
+ 		select * from baoyang	where id = #{id}
+</select>
+<update id="updateBaoyang" parameterType="com.jili.upload.baoyang.po.Baoyang">
+      update baoyang 
+<set>
+  <if test="bid != null"> bid = #{bid,jdbcType=VARCHAR}, </if>
+  <if test="btjm != null"> btjm = #{btjm}, </if>
+  <if test="bdepartment != null"> bdepartment = #{bdepartment,jdbcType=CHAR}, </if>
+  <if test="bpeople != null"> bpeople = #{bpeople,jdbcType=VARCHAR}, </if>
+  <if test="uploadname != null"> uploadname = #{uploadname}, </if>
+  <if test="uploaduuid != null"> uploaduuid = #{uploaduuid}, </if>
+  <if test="btime != null"> btime = #{btime}, </if>
+
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+</mapper>

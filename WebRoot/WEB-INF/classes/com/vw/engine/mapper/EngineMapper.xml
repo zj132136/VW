@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vw.engine.mapper.EngineMapper" >
+
+	<resultMap type="com.vw.engine.po.engines_location" id="engineLocationResultMap">
+         <!-- 用id属性来映射主键字段 -->
+        <result property="location_id" column="location_id"/>
+        <!-- 用result属性来映射非主键字段 -->
+         <result property="location" column="location"/>
+         <result property="add_by" column="add_by"/>
+         <result property="add_datetime" column="add_datetime"/>
+         
+    </resultMap>
+	<sql id="select">
+		<if test="_parameter!=null and _parameter!=''">
+			location_id like '%${_parameter}%'
+		</if>		
+	</sql>
+	<sql id="selectEngineRecordInfo">
+		<if test="startTime!=null and startTime!='' ">  
+         and time &gt;=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and time &lt;= #{endTime}
+        </if>	
+        <if test="engineName!=null and engineName!=''">  
+        and engineName = #{engineName}
+        </if>	
+	</sql>
+	<sql id="selectEngineTest">
+			
+        <if test="engineId!=null and engineId!=''">  
+        and engineId = #{engineId}
+        </if>	
+        
+	</sql>
+	<sql id="selectEngineParts">
+			
+        <if test="engineId!=null and engineId!=''">  
+        and engineId = #{engineId}
+        </if>	
+	</sql>
+	<sql id="selectCylinderPressure">
+		
+        <if test="engineName!=null and engineName!=''">  
+        and engineName = #{engineName}
+        </if>	
+	</sql>
+	<sql id="selectOilConsumption">
+		
+        <if test="engineName!=null and engineName!=''">  
+        and engineName = #{engineName}
+        </if>	
+	</sql>
+ 	<select id="selectEngineLocation" parameterType="com.vw.engine.po.engines_location" resultMap="engineLocationResultMap">
+ 		select * from engines_location	
+ 	</select>
+ 	<select id="selectEngineLocationById" parameterType="java.lang.Integer" resultMap="engineLocationResultMap">
+ 		select * from engines_location	
+ 		<where>
+ 		
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<update id="engineLocationEditSubmit" parameterType="com.vw.engine.po.engines_location">
+		update engines_location 
+		<set>
+		  <if test="location != null"> location = #{location}, </if>
+		  <if test="add_by != null"> add_by = #{add_by}, </if>
+		  <if test="add_datetime != null"> add_datetime = #{add_datetime}, </if>
+		</set>
+		where location_id = #{location_id} 
+	</update>
+	<insert id="engineLocationAddSubmit" parameterType="com.vw.engine.po.engines_location">
+		insert into engines_location values(#{location_id},#{location},#{add_by},#{add_datetime})
+	</insert>
+	<delete id="delEngineLocation" parameterType="java.lang.Integer">
+		 delete  from engines_location  where location_id =#{id} 
+	</delete>
+ 	<select id="selectEngineRecordInfo" parameterType="com.vw.engine.po.EngineRecordInfo" resultType="com.vw.engine.po.EngineRecordInfo">
+ 		select * from engineRecordInfo	
+ 		<where>
+ 			<include refid ="selectEngineRecordInfo"></include>
+ 		</where>
+ 	</select>
+ 	<select id="countEngineRecordInfo"  parameterType="com.vw.engine.po.EngineRecordInfo"  resultType="int">
+ 		select count(id) from engineRecordInfo
+ 		<where>
+ 			<include refid ="selectEngineRecordInfo"></include>
+ 		</where>
+	</select>
+	<select id="selectEngine" parameterType="com.vw.engine.po.Engine" resultType="com.vw.engine.po.Engine">
+ 		select * from engine	
+ 	</select>
+ 	<select id="selectEngineById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.Engine">
+ 		select * from engine	where engineId like '%${_parameter}%'
+ 	</select>
+ 	<delete id="delEngine" parameterType="java.lang.Integer">
+		 delete  from engine  where engineId =#{id} 
+	</delete>
+	<update id="engineEditSubmit" parameterType="com.vw.engine.po.Engine">
+		update engine 
+		<set>
+		  <if test="engineName != null"> engineName = #{engineName}, </if>
+		  <if test="addByUser != null"> addByUser = #{addByUser}, </if>
+		  <if test="addDatetime != null"> addDatetime = #{addDatetime}, </if>
+		</set>
+		where engineId = #{engineId} 
+	</update>
+	<insert id="engineAddSubmit" parameterType="com.vw.engine.po.Engine">
+		insert into engine values(#{engineId},#{engineName},#{addByUser},#{addDatetime})
+	</insert>
+	<select id="selectEngineName"  resultType="String">
+ 		select engineName from engine	
+ 		
+ 	</select>
+ 	<insert id="engineRecordInfoAddSubmit" parameterType="com.vw.engine.po.EngineRecordInfo">
+		insert into enginerecordinfo values(#{id},#{engineId},#{engineName},#{time},#{engineLoaction},#{engineBasicInfo},#{engineTestInfo},#{engineParts},#{oilConsume},#{oilPressure},#{cylPressure},#{nitrogenLeak},#{superchargerMeasure})
+	</insert>
+	<select id="selectEngineTestBasic" parameterType="com.vw.engine.po.EngineTestBasic" resultType="com.vw.engine.po.EngineTestBasic">
+ 		select * from enginetestbasic	
+ 		<where>
+ 			<if test="engineId!=null and engineId!=''">  
+	        and engineId = #{engineId}
+	        </if>	
+ 		</where>
+ 	</select>
+ 	<select id="selectEngineRecordInfoById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.EngineRecordInfo">
+ 		select * from enginerecordinfo	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''and _parameter!= 0">
+			id = #{_parameter}
+		</if>
+ 		</where>
+ 	</select>
+ 	<insert id="engineBasicAddSubmit" parameterType="com.vw.engine.po.EngineTestBasic">
+		insert into enginetestbasic values(#{id},#{cylinderQuantity},#{cylinderVolume},#{gasolineType},#{oilType1},#{oilType2},#{exhaustBackPress},#{gearboxQuantity},#{ecuDateVersion},#{trolleyNum},#{cacNum},#{cacHeatExchangeNum},#{preventTheftBox},#{sentBoxNum},#{sentCableNum},#{powerSupply},#{vectorNum},#{testbedCableNum},#{engineStartType},#{distanceBeforeTransmission},#{alignmentRadialDirecttion},#{alignmentAxial},#{avl553HeatExchanger},#{remark},#{engineId},#{locationId},#{addByUser})
+	</insert>
+	<select id="engineBasicSelectById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.EngineTestBasic">
+ 		select * from enginetestbasic	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+			id = #{_parameter}
+		</if>
+ 		</where>
+ 	</select>
+ 	<delete id="delEngineBasic" >
+		 delete  from enginetestbasic  where id =#{id} 
+	</delete>
+	
+	<select id="selectEngineTest" parameterType="com.vw.engine.po.EngineTest" resultType="com.vw.engine.po.EngineTest">
+ 		select * from engineTest	
+ 		<where>
+ 			<include refid ="selectEngineTest"></include>
+ 		</where>
+ 	</select>
+ 	<insert id="engineTestAddSubmit" parameterType="com.vw.engine.po.EngineTest">
+		insert into engineTest values(#{id},#{testName},#{planStartTime},#{planEndTime},#{actualStartTime},#{actualEndTime},#{engineId},#{engineName},#{locationId},#{locationName},#{addByUser},#{time})
+	</insert>
+	<update id="engineBasicUpdateSubmit" parameterType="com.vw.engine.po.EngineTestBasic">
+		update enginetestbasic 
+		<set>
+		  <if test="cylinderQuantity != null"> cylinderQuantity = #{cylinderQuantity}, </if>
+		  <if test="cylinderVolume != null"> cylinderVolume = #{cylinderVolume}, </if>
+		  <if test="gasolineType != null"> gasolineType = #{gasolineType}, </if>
+		  <if test="oilType1 != null"> oilType1 = #{oilType1}, </if>
+		  <if test="oilType2 != null"> oilType2 = #{oilType2}, </if>
+		  <if test="exhaustBackPress != null"> exhaustBackPress = #{exhaustBackPress}, </if>
+		  <if test="gearboxQuantity != null"> gearboxQuantity = #{gearboxQuantity}, </if>
+		  <if test="ecuDateVersion != null"> ecuDateVersion = #{ecuDateVersion}, </if>
+		  <if test="trolleyNum != null"> trolleyNum = #{trolleyNum}, </if>
+		  <if test="cacNum != null"> cacNum = #{cacNum}, </if>
+		  <if test="cacHeatExchangeNum != null"> cacHeatExchangeNum = #{cacHeatExchangeNum}, </if>
+		  <if test="preventTheftBox != null"> preventTheftBox = #{preventTheftBox}, </if>
+		  <if test="sentBoxNum != null"> sentBoxNum = #{sentBoxNum}, </if>
+		  <if test="sentCableNum != null"> sentCableNum = #{sentCableNum}, </if>
+		  <if test="powerSupply != null"> powerSupply = #{powerSupply}, </if>
+		  <if test="vectorNum != null"> vectorNum = #{vectorNum}, </if>
+		  <if test="testbedCableNum != null"> testbedCableNum = #{testbedCableNum}, </if>
+		  <if test="engineStartType != null"> engineStartType = #{engineStartType}, </if>
+		  <if test="distanceBeforeTransmission != null"> distanceBeforeTransmission = #{distanceBeforeTransmission}, </if>
+		  <if test="alignmentRadialDirecttion != null"> alignmentRadialDirecttion = #{alignmentRadialDirecttion}, </if>
+		  <if test="alignmentAxial != null"> alignmentAxial = #{alignmentAxial}, </if>
+		  <if test="avl553HeatExchanger != null"> avl553HeatExchanger = #{avl553HeatExchanger}, </if>
+		  <if test="remark != null"> remark = #{remark}, </if>
+		  <if test="engineId != null"> engineId = #{engineId}, </if>
+		  <if test="locationId != null"> locationId = #{locationId}, </if>
+		  <if test="addByUser != null"> addByUser = #{addByUser}, </if>
+		  
+		</set>
+		where id = #{id} 
+	</update>
+	<delete id="delEngineTest" >
+		 delete  from engineTest  where id =#{id} 
+	</delete>
+	<select id="selectEngineTestById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.EngineTest">
+ 		select * from engineTest	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+			id = #{_parameter}
+		</if>
+ 		</where>
+ 	</select>
+ 	<update id="engineTestEditSubmit" parameterType="com.vw.engine.po.EngineTest">
+		update engineTest 
+		<set>
+		  <if test="testName != null"> testName = #{testName}, </if>
+		  <if test="planStartTime != null"> planStartTime = #{planStartTime}, </if>
+		  <if test="planEndTime != null"> planEndTime = #{planEndTime}, </if>
+		  <if test="actualStartTime != null"> actualStartTime = #{actualStartTime}, </if>
+		  <if test="actualEndTime != null"> actualEndTime = #{actualEndTime}, </if>
+		  <if test="engineId != null"> engineId = #{engineId}, </if>
+		  <if test="engineName != null"> engineName = #{engineName}, </if>
+		  <if test="locationId != null"> locationId = #{locationId}, </if>
+		  <if test="locationName != null"> locationName = #{locationName}, </if>
+		  <if test="addByUser != null"> addByUser = #{addByUser}, </if>
+		  <if test="time != null"> time = #{time}, </if>
+		</set>
+		where id = #{id} 
+	</update>
+	<select id="selectEngineParts" parameterType="com.vw.engine.po.EngineParts" resultType="com.vw.engine.po.EngineParts">
+ 		select * from engineParts	
+ 		<where>
+ 			<include refid ="selectEngineParts"></include>
+ 		</where>
+ 	</select>
+ 	<insert id="enginePartsAddSubmit" parameterType="com.vw.engine.po.EngineParts">
+		insert into engineParts values(#{id},#{partName},#{partNum},#{partOperation},#{testCycleRunTime},#{totalTime},#{operator},#{testName},#{changePartTime},#{engineId},#{engineName},#{locationId},#{locationName},#{addByUser},#{time})
+	</insert>
+	<delete id="delEngineParts" >
+		 delete  from engineParts  where id =#{id} 
+	</delete>
+	<select id="selectEnginePartsById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.EngineParts">
+ 		select * from engineParts	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+			id = #{_parameter}
+		</if>
+ 		</where>
+ 	</select>
+ 	<update id="enginePartsEditSubmit" parameterType="com.vw.engine.po.EngineParts">
+		update engineParts 
+		<set>
+		  <if test="partName != null"> partName = #{partName}, </if>
+		  <if test="partNum != null"> partNum = #{partNum}, </if>
+		  <if test="partOperation != null"> partOperation = #{partOperation}, </if>
+		  <if test="testCycleRunTime != null"> testCycleRunTime = #{testCycleRunTime}, </if>
+		  <if test="totalTime != null"> totalTime = #{totalTime}, </if>
+		  <if test="operator != null"> operator = #{operator}, </if>
+		  <if test="testName != null"> testName = #{testName}, </if>
+		  <if test="changePartTime != null"> changePartTime = #{changePartTime}, </if>
+		  <if test="engineId != null"> engineId = #{engineId}, </if>
+		  <if test="engineName != null"> engineName = #{engineName}, </if>
+		  <if test="locationId != null"> locationId = #{locationId}, </if>
+		  <if test="locationName != null"> locationName = #{locationName}, </if>
+		  <if test="addByUser != null"> addByUser = #{addByUser}, </if>
+		  <if test="time != null"> time = #{time}, </if>
+		</set>
+		where id = #{id} 
+	</update>
+	<update id="engineRecordInfoUpdate" parameterType="com.vw.engine.po.EngineRecordInfo">
+		update enginerecordinfo 
+		<set>
+		  <if test="engineId != null"> engineId = #{engineId}, </if>
+		  <if test="engineName != null"> engineName = #{engineName}, </if>
+		  <if test="time != null"> time = #{time}, </if>
+		  <if test="engineLoaction != null"> engineLoaction = #{engineLoaction}, </if>
+		  <if test="engineBasicInfo != null"> engineBasicInfo = #{engineBasicInfo}, </if>
+		  <if test="engineTestInfo != null"> engineTestInfo = #{engineTestInfo}, </if>
+		  <if test="engineParts != null"> engineParts = #{engineParts}, </if>
+		  <if test="oilConsume != null"> oilConsume = #{oilConsume}, </if>
+		  <if test="oilPressure != null"> oilPressure = #{oilPressure}, </if>
+		  <if test="cylPressure != null"> cylPressure = #{cylPressure}, </if>
+		  <if test="nitrogenLeak != null"> nitrogenLeak = #{nitrogenLeak}, </if>
+		  <if test="superchargerMeasure != null"> superchargerMeasure = #{superchargerMeasure}, </if>
+	
+		</set>
+		where id = #{id} 
+	</update>
+	<select id="selectCylinderPressure" parameterType="com.vw.engine.po.CylinderPressure" resultType="com.vw.engine.po.CylinderPressure">
+ 		select * from cylinderPressure	
+ 		<where>
+ 			<include refid ="selectCylinderPressure"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectCylinderPressureById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.CylinderPressure">
+ 		select * from cylinderPressure	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+			id = #{_parameter}
+		</if>
+ 		</where>
+ 	</select>
+ 	<delete id="delCylinderPressure" >
+		 delete  from cylinderPressure  where id =#{id} 
+	</delete>
+	<insert id="cylinderPressureAddSubmit" parameterType="com.vw.engine.po.CylinderPressure">
+		insert into cylinderPressure values(#{id},#{cylinderPressureTime},#{operator},#{cycleTime},#{totalTime},#{testName},#{maintenanceTpye},#{cylinder1},#{cylinder2},#{cylinder3},#{cylinder4},#{results},#{remark},#{engineId},#{engineName},#{locationId},#{locationName})
+	</insert>
+	<select id="selectOilConsumption" parameterType="com.vw.engine.po.OilConsumption" resultType="com.vw.engine.po.OilConsumption">
+ 		select * from oilConsumption	
+ 		<where>
+ 			<include refid ="selectOilConsumption"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectOilConsumptionById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.OilConsumption">
+ 		select * from oilConsumption	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+				id = #{_parameter}
+			</if>
+ 		</where>
+ 	</select>
+ 	<delete id="delOilConsumption" >
+		 delete  from oilConsumption  where id =#{id} 
+	</delete>
+	<insert id="oilConsumptionAddSubmit" parameterType="com.vw.engine.po.OilConsumption">
+		insert into oilConsumption values(#{id},#{oilConsumptionTime},#{operator},#{cycleTime},#{totalTime},#{testName},#{maintenanceTpye},#{something},#{funnelWeight},#{oilPot},#{potBefore},#{funnelAfterFilling},#{oilAddedDuring},#{potAfter},#{oilWeight},#{engineRunTime},#{grossWeightBefore},#{oilConsumption},#{drainOilGrossWeight},#{oilType},#{grossOilConsumption},#{engineId},#{engineName},#{locationId},#{locationName})
+	</insert>
+	<select id="selectTurboChargerVoltage" parameterType="com.vw.engine.po.TurboChargerVoltage" resultType="com.vw.engine.po.TurboChargerVoltage">
+ 		select * from turbochargervoltage	
+ 		<where>
+ 			<include refid ="selectOilConsumption"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectTurboChargerVoltageById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.TurboChargerVoltage">
+ 		select * from turbochargervoltage	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+				id = #{_parameter}
+			</if>
+ 		</where>
+ 	</select>
+ 	<delete id="delTurboChargerVoltage" >
+		 delete  from turbochargervoltage  where id =#{id} 
+	</delete>
+	<insert id="turboChargerVoltageAddSubmit" parameterType="com.vw.engine.po.TurboChargerVoltage">
+		insert into turbochargervoltage values(#{id},#{turboChargerVoltageTime},#{operator},#{cycleTime},#{totalTime},#{testName},#{maintenanceTpye},#{turboPartNumber},#{turboSerialNumber},#{turboManufacturer},#{actuatorPartNumber},#{actuaorSerialNumber},#{actuatorManufacturer},#{sensorVoltage},#{toelw1},#{remark},#{engineId},#{engineName},#{locationId},#{locationName})
+	</insert>
+	<select id="selectNitrogenLeakage" parameterType="com.vw.engine.po.NitrogenLeakage" resultType="com.vw.engine.po.NitrogenLeakage">
+ 		select * from NitrogenLeakage	
+ 		<where>
+ 			<include refid ="selectOilConsumption"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectNitrogenLeakageById" parameterType="java.lang.Integer" resultType="com.vw.engine.po.NitrogenLeakage">
+ 		select * from NitrogenLeakage	
+ 		<where>
+ 			<if test="_parameter!=null and _parameter!=''">
+				id = #{_parameter}
+			</if>
+ 		</where>
+ 	</select>
+ 	<delete id="delnitrogenLeakage" >
+		 delete  from NitrogenLeakage  where id =#{id} 
+	</delete>
+	<insert id="nitrogenLeakageAddSubmit" parameterType="com.vw.engine.po.NitrogenLeakage">
+		insert into NitrogenLeakage values(#{id},#{nitrogenLeakageTime},#{operator},#{cycleTime},#{totalTime},#{testName},#{maintenanceTpye},#{cylinder1Status},#{cylinder2Status},#{cylinder3Status},#{cylinder4Status},#{cylinder1Pressure},#{cylinder2Pressure},#{cylinder3Pressure},#{cylinder4Pressure},#{engineId},#{engineName},#{locationId},#{locationName})
+	</insert>
+	<select id="selectOilPressure" parameterType="com.vw.engine.po.OilPressure" resultType="com.vw.engine.po.OilPressure">
+ 		select * from oilPressure 
+ 		<where>
+ 			<include refid ="selectOilConsumption"></include>
+ 		</where>
+ 		GROUP BY engineName,testName
+ 	</select>
+ 	<select id="selectOilPressureByEngineName" parameterType="com.vw.engine.po.OilPressure" resultType="com.vw.engine.po.OilPressure">
+ 		select * from oilPressure  where engineName =#{engineName} GROUP BY engineName,testName
+ 	</select>
+ 	<select id="selectOilPressureByEngineNameAndTestname" parameterType="com.vw.engine.po.OilPressure" resultType="com.vw.engine.po.OilPressure">
+ 		select * from oilPressure  where engineName =#{engineName} and testName=#{testName}
+ 	</select>
+ 	<select id="selectOilPressureByid" parameterType="String" resultType="com.vw.engine.po.OilPressure">
+ 		select * from oilPressure where id =#{id} 
+ 	</select>
+ 	<delete id="delOilPressure" >
+		 delete  from oilPressure  where id =#{id} 
+	</delete>
+	<delete id="delOilPressureAllEngineName" >
+		 delete  from oilPressure  where engineName =#{engineName} 
+	</delete>
+	<select id="selectoilPressureTurboActuatorList"  resultType="com.vw.engine.po.OilPressureTurboActuator">
+ 		select * from oilPressureTurboActuator  
+ 	</select>
+ 	<insert id="oilPressureAddSubmit" parameterType="com.vw.engine.po.OilPressure">
+		insert into oilPressure values(#{id},#{oilPressureTime},#{operator},#{cycleTime},#{totalTime},#{testName},#{maintenanceTpye},#{olsumpfTempratur},#{kuhlmittelTempratur},#{motorDrehzahl},#{drosselklapp},#{steuerventilDruckstufen},#{schaltventilKolbenkhul},#{oldruckBeimPoelf},#{oldruckBeimMin},#{oldruckBeimMax},#{oldruckInKobenPkokue},#{oldruckInKobenMin},#{oldruckInKobenMax},#{engineId},#{engineName},#{locationId},#{locationName})
+	</insert>
+	
+	<update id="oilPressureUpdate" parameterType="com.vw.engine.po.OilPressure">
+		update oilPressure 
+		<set>
+		  <if test="olsumpfTempratur != null"> olsumpfTempratur = #{olsumpfTempratur}, </if>
+		  <if test="kuhlmittelTempratur != null"> kuhlmittelTempratur = #{kuhlmittelTempratur}, </if>
+		  <if test="steuerventilDruckstufen != null"> steuerventilDruckstufen = #{steuerventilDruckstufen}, </if>
+		  <if test="schaltventilKolbenkhul != null"> schaltventilKolbenkhul = #{schaltventilKolbenkhul}, </if>
+		  <if test="oldruckBeimPoelf != null"> oldruckBeimPoelf = #{oldruckBeimPoelf}, </if>
+		  <if test="oldruckInKobenPkokue != null"> oldruckInKobenPkokue = #{oldruckInKobenPkokue}, </if>
+		  
+		</set>
+		where id = #{id} 
+	</update>
+</mapper>

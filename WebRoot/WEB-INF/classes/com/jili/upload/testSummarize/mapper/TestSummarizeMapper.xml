@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.testSummarize.mapper.TestSummarizeMapper" >
+
+
+<insert id="insertTestSummarize" parameterType="com.jili.upload.testSummarize.po.TestSummarize">
+	insert into testSummarize values(#{id},#{stjm},#{sproject},#{speople},#{stime},#{snum},#{stestnum},#{uploadname},#{uploaduuid})
+</insert>
+
+<select id="selectTestSummarize" parameterType="com.jili.upload.testSummarize.po.TestSummarize" resultType="com.jili.upload.testSummarize.po.TestSummarize">
+ 		select * from testSummarize	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<select id="countTestSummarize" parameterType="com.jili.upload.testSummarize.po.TestSummarize" resultType="int">
+ 		select count(id) from testSummarize	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<sql id="select">
+		<if test="stjm!=null and stjm!=''">
+			stjm like '%${stjm}%'
+		</if>
+		<if test="sproject!=null and sproject!='' ">  
+         and sproject like '%${sproject}%'    
+        </if>  
+        <if test="speople!=null and speople!='' ">  
+         and speople like '%${speople}%'    
+        </if>
+        <if test="snum!=null and snum!='' ">  
+         and snum like '%${snum}%'    
+        </if> 
+        <if test="stestnum!=null and stestnum!='' ">  
+         and stestnum like '%${stestnum}%'    
+        </if>    
+	</sql>
+</mapper>

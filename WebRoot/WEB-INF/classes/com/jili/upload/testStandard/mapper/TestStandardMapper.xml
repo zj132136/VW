@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.testStandard.mapper.TestStandardMapper" >
+<sql id="select">
+		
+		<if test="sname!=null and sname!=''">
+			and sname like '%${sname}%'
+		</if>
+		<if test="snum!=null and snum!=''">
+			and snum like '%${snum}%'
+		</if>	
+	</sql>
+ 	<select id="selectListTestStandard" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="com.jili.upload.testStandard.po.TestStandard">
+ 		select * from standard
+ 		<where>
+ 		sstate = '讨论版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countTestStandardFirst" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="int">
+ 		select count(id) from standard
+ 		<where>
+ 		sstate = '讨论版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectListTestStandardSecond" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="com.jili.upload.testStandard.po.TestStandard">
+ 		select * from standard
+ 		<where>
+ 		sstate = '在用版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countTestStandardSecond" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="int">
+ 		select count(id) from standard
+ 		<where>
+ 		sstate = '在用版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectListTestStandardThird" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="com.jili.upload.testStandard.po.TestStandard">
+ 		select * from standard
+ 		<where>
+ 		sstate = '作废版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countTestStandardThird" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="int">
+ 		select count(id) from standard
+ 		<where>
+ 		sstate = '作废版'
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	
+	<insert id="insertTestStandard" parameterType="com.jili.upload.testStandard.po.TestStandard">
+	insert into standard values(#{id},#{stype},#{sname},#{snum},#{stime},#{sversion},#{sstate},#{uploaduuid})
+    </insert>
+    <select id="selectById" parameterType="com.jili.upload.testStandard.po.TestStandard" resultType="com.jili.upload.testStandard.po.TestStandard">
+ 		select * from standard where id =#{id}	
+ 	</select>
+ <update id="testStandardEditSubmit" parameterType="com.jili.upload.testStandard.po.TestStandard">
+      update standard 
+<set>
+  <if test="stype != null"> stype = #{stype,jdbcType=VARCHAR}, </if>
+  <if test="sname != null"> sname = #{sname}, </if>
+  <if test="snum != null"> snum = #{snum,jdbcType=CHAR}, </if>
+  <if test="stime != null"> stime = #{stime}, </if>
+  <if test="sversion != null"> sversion = #{sversion,jdbcType=VARCHAR}, </if>
+  <if test="sstate != null"> sstate = #{sstate,jdbcType=VARCHAR}, </if>
+  <if test="uploaduuid != null"> uploaduuid = #{uploaduuid}, </if> 
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+</mapper>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.experiment.mapper.ExperimentMapper" >
+
+<resultMap type="com.jili.basedata.po.Tj" id="12equipmentResultMap">
+         <!-- 用id属性来映射主键字段 -->
+       <!--  <id property="id" column="id"/> -->
+        <!-- 用result属性来映射非主键字段 -->
+         <result property="key" column="keyplan"/>   
+         <result property="label" column="tjm"/>  
+         <result property="tjtype" column="tjtype"/>  
+</resultMap>
+    
+    
+ <select id="selectByString" parameterType="com.jili.experiment.experiment.po.Experiment" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from experiment  where tjm =#{tjm} 
+</select>
+<select id="selectById" parameterType="integer" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from experiment  where id =#{id} 
+</select>
+<select id="selectByStringList" parameterType="com.jili.experiment.experiment.po.Experiment" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from experiment 
+ 		<where>
+ 		
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<select id="selectByStringListA" parameterType="com.jili.experiment.experiment.po.Experiment" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from experiment 
+ 		<where>
+ 		ab="A区"
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<select id="selectByStringListB" parameterType="com.jili.experiment.experiment.po.Experiment" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from experiment 
+ 		<where>
+ 		ab="B区"
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<sql id="select">
+		<if test="tjm!=null and tjm!=''">
+			tjm like '%${tjm}%'
+		</if>
+		  
+</sql>
+
+<update id="editExperimentSubmit" parameterType="com.jili.experiment.experiment.po.Experiment">
+      update experiment 
+<set>
+  <if test="tjm != null"> tjm = #{tjm,jdbcType=VARCHAR}, </if>
+  <if test="experimentname != null"> experimentname = #{experimentname,jdbcType=VARCHAR}, </if>
+  <if test="testpeople != null"> testpeople = #{testpeople,jdbcType=VARCHAR}, </if>
+  <if test="ttestnum != null"> ttestnum = #{ttestnum,jdbcType=VARCHAR}, </if>
+  <if test="yjxx != null"> yjxx = #{yjxx,jdbcType=VARCHAR}, </if>
+  <if test="tjstate != null"> tjstate = #{tjstate,jdbcType=VARCHAR}, </if>  
+  <if test="tjtype != null"> tjtype = #{tjtype,jdbcType=VARCHAR}, </if>  
+  <if test="jtype != null"> jtype = #{jtype,jdbcType=VARCHAR}, </if> 
+  <if test="jmodel != null"> jmodel = #{jmodel,jdbcType=VARCHAR}, </if> 
+  <if test="totaltime != null"> totaltime = #{totaltime}, </if> 
+  <if test="ab != null"> ab = #{ab}, </if> 
+  <if test="carnum != null"> carnum = #{carnum}, </if> 
+  <if test="projectOrderNum != null"> projectOrderNum = #{projectOrderNum}, </if> 
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+<update id="updateTestnum" parameterType="com.jili.experiment.experiment.po.Experiment">
+      update experiment 
+<set>
+ 
+  <if test="ttestnum != null"> ttestnum = #{ttestnum,jdbcType=VARCHAR}, </if>
+  
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<select id="count" resultType="int">
+ 		select count(id) from experiment 
+ 		
+</select>
+<select id="ttestnumselect" resultType="String">
+ 		select ttestnum from experiment where id =#{id}
+ 		
+</select>
+<select id="planList" resultMap="12equipmentResultMap">
+ 		select keyplan,tjm,tjtype from experiment 
+ 		
+</select>
+
+
+
+<select id="stateselect" resultType="String">
+ 		select tjstate from experiment where id =#{id}
+ 		
+</select>
+<update id="clearTotalTime" parameterType="com.jili.experiment.experiment.po.Experiment">
+      update experiment set totaltime = 0 where tjm = #{tjm} 
+</update>
+<update id="updateTotalTime" parameterType="Map">
+      update experiment set totaltime = experiment.totaltime + #{hours} where tjm = #{tjm} 
+</update>
+
+
+<select id="selectTjmById" parameterType="int" resultType="String">
+ 		select experiment.tjm from experiment  where id =#{id} 
+</select>
+<select id="selectTjm" resultType="String" >
+ 		select tjm from experiment
+</select>
+<select id="selectPhoto" resultType="String" >
+ 		select mainphoto from mainphoto
+</select>
+<insert id="insertStateRecord" parameterType="com.jili.experiment.experiment.po.ExperimentStateChangeRecord">
+	insert into experimentStateChangeRecord values(id,#{tjm},#{ab},#{jtype},#{tjtype},#{totaltime},#{jmodel},#{experimentname},#{testpeople},#{ttestnum},#{yjxx},#{tjstateold},#{tjstatenew},#{changetime})
+</insert>
+
+<select id="selectStateChange" parameterType="com.jili.experiment.experiment.po.ExperimentStateChangeRecord" resultType="com.jili.experiment.experiment.po.ExperimentStateChangeRecord" >
+ 		select * from experimentStateChangeRecord
+ 		<where>
+ 			<include refid ="selectStateChangeRecord"></include>
+ 		</where>
+ 		order by  id desc
+</select>
+<select id="countStateChangeRecord" parameterType="com.jili.experiment.experiment.po.ExperimentStateChangeRecord"   resultType="int">
+ 		select count(id) from experimentStateChangeRecord 
+ 		<where>
+ 			<include refid ="selectStateChangeRecord"></include>
+ 		</where>
+ 		
+</select>
+<sql id="selectStateChangeRecord">
+		<if test="experimentname!=null and experimentname!=''">
+			experimentname like '%${experimentname}%'
+		</if>
+		<if test="testpeople!=null and testpeople!=''">
+		and	testpeople like '%${testpeople}%'
+		</if>
+		<if test="yjxx!=null and yjxx!=''">
+		and	yjxx like '%${yjxx}%'
+		</if>
+		<if test="ttestnum!=null and ttestnum!=''">
+		and	ttestnum like '%${ttestnum}%'
+		</if>
+		<if test="tjm!=null and tjm!=''">
+		and	tjm = #{tjm}
+		</if>
+		<if test="startTime!=null and startTime!='' ">  
+         and changetime &gt;=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and changetime &lt;= #{endTime}
+        </if> 
+</sql>
+
+
+ <select id="selectEquipmentByStringList" parameterType="com.jili.experiment.experiment.po.Experiment" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from equipmentdatabase  
+</select>
+
+<select id="countEquipment" resultType="int">
+ 		select count(id) from equipmentdatabase 
+ 		
+</select>
+<update id="editEquipmentSumbit" parameterType="com.jili.experiment.experiment.po.Experiment">
+      update equipmentdatabase 
+<set>
+  <if test="tjm != null"> tjm = #{tjm,jdbcType=VARCHAR}, </if>
+  <if test="experimentname != null"> experimentname = #{experimentname,jdbcType=VARCHAR}, </if>
+  <if test="testpeople != null"> testpeople = #{testpeople,jdbcType=VARCHAR}, </if>
+  <if test="ttestnum != null"> ttestnum = #{ttestnum,jdbcType=VARCHAR}, </if>
+  <if test="yjxx != null"> yjxx = #{yjxx,jdbcType=VARCHAR}, </if>
+  <if test="tjstate != null"> tjstate = #{tjstate,jdbcType=VARCHAR}, </if>  
+  <if test="tjtype != null"> tjtype = #{tjtype,jdbcType=VARCHAR}, </if>  
+  <if test="jtype != null"> jtype = #{jtype,jdbcType=VARCHAR}, </if> 
+  <if test="jmodel != null"> jmodel = #{jmodel,jdbcType=VARCHAR}, </if> 
+  <if test="totaltime != null"> totaltime = #{totaltime}, </if> 
+  <if test="ab != null"> ab = #{ab}, </if> 
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<insert id="equipmentAddSubmit" parameterType="com.jili.experiment.experiment.po.Experiment">
+	insert into equipmentdatabase values(id,#{tjm},#{ab},#{keyplan},#{jtype},#{tjtype},#{totaltime},#{jmodel},
+	#{experimentname},#{testpeople},#{ttestnum},#{yjxx},#{tjstate})
+</insert>
+
+<select id="selecEquipmenttById" parameterType="integer" resultType="com.jili.experiment.experiment.po.Experiment">
+ 		select * from equipmentdatabase  where id =#{id} 
+</select>
+
+
+<select id="selectXinChai" parameterType="integer" resultType="com.jili.experiment.experiment.po.Xinchai">
+ 		select * from testreport  
+</select>
+</mapper>

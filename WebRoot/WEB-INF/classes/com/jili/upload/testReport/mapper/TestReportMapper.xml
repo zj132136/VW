@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.testReport.mapper.TestReportMapper" >
+
+
+<insert id="insertTestReport" parameterType="com.jili.upload.testReport.po.TestReport">
+	insert into testReport values(#{id},#{rtype},#{rtjm},#{rproject},#{rpeople},#{rtime},#{rnum},#{rtestnum},#{uploaduuid},#{uploadname})
+</insert>
+
+<select id="selectTestReport" parameterType="com.jili.upload.testReport.po.TestReport" resultType="com.jili.upload.testReport.po.TestReport">
+ 		select * from testReport	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+</select>
+<select id="countTestReport" parameterType="com.jili.upload.testReport.po.TestReport" resultType="int">
+ 		select count(id) from testReport	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+</select>
+	<sql id="select">
+		<if test="rtjm!=null and rtjm!=''">
+			rtjm like '%${rtjm}%'
+		</if>
+		<if test="rproject!=null and rproject!='' ">  
+         and rproject like '%${rproject}%'    
+        </if>  
+        <if test="rpeople!=null and rpeople!='' ">  
+         and rpeople like '%${rpeople}%'    
+        </if>
+        <if test="rnum!=null and rnum!='' ">  
+         and rnum like '%${rnum}%'    
+        </if> 
+        <if test="rtestnum!=null and rtestnum!='' ">  
+         and rtestnum like '%${rtestnum}%'    
+        </if>    
+	</sql>
+</mapper>

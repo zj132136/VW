@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.maintain.mapper.MaintainMapper" >
+<sql id="select">
+		<if test="equipmentNum!=null and equipmentNum!=''">
+			equipmentNum like '%${equipmentNum}%'
+		</if>
+		<if test="equipmentType!=null and equipmentType!=''">
+		and	equipmentType like '%${equipmentType}%'
+		</if>
+		<if test="repairPeople!=null and repairPeople!=''">
+		and	repairPeople like '%${repairPeople}%'
+		</if>
+		<if test="malfunction!=null and malfunction!=''">
+		and	malfunction like '%${malfunction}%'
+		</if>
+		<if test="tjm!=null and tjm!=''">
+		and	tjm like '%${tjm}%'
+		</if>
+		<if test="qx!=null and qx!=''">
+		and	qx like '%${qx}%'
+		</if>
+		<if test="startTime!=null and startTime!='' ">  
+         and maintainRequestTime &gt;=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and maintainRequestTime &lt;= #{endTime}
+        </if>
+        <if test="startTimeRepair!=null and startTimeRepair!='' ">  
+         and repairTime &gt;=#{startTimeRepair}    
+        </if>  
+        <if test="endTimeRepair!=null and endTimeRepair!=''">  
+        and repairTime &lt;= #{endTimeRepair}
+        </if>  
+        <if test="tjmaccurate!=null and tjmaccurate!=''">  
+        and tjm = #{tjmaccurate}
+        </if>
+        <if test="isRepair==0 ">  
+        and (repairTime != null or repairTime!='')
+        </if>
+        <if test="isRepair==1 ">  
+        and (repairTime is null or repairTime='')
+        </if>
+</sql>
+<select id="selectMaintain" parameterType="com.jili.maintain.po.Maintain" resultType="com.jili.maintain.po.Maintain">
+ 		select *,TIMESTAMPDIFF(MINUTE,maintainRequestTime,repairTime) as timeCha from maintain 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+</select>
+<select id="selectSumList2"  resultType="com.jili.maintain.po.Maintain">
+ 		select *,TIMESTAMPDIFF(MINUTE,maintainRequestTime,repairTime) as timeCha from maintain
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+ 	</select>
+ 	
+ 	<select id="count" parameterType="com.jili.maintain.po.Maintain"   resultType="int">
+ 		select count(id) from maintain 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+<select id="selectRepair"  resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain  where <!-- repairPeople is null or repairPeople='' or --> stage=1
+</select>
+<select id="countRepair" parameterType="com.jili.maintain.po.Maintain"   resultType="int">
+ 		select count(id) from maintain where <!--  repairPeople is null or repairPeople='' or --> stage=1
+</select>
+<select id="selectAcknowledgement"  resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain  where <!-- (repairPeople is not null or repairPeople!='') and (acknowledgement is  null or acknowledgement='') or --> stage=2
+</select>
+<select id="countAcknowledgement"    resultType="int">
+ 		select count(id) from maintain where <!-- (repairPeople is not null or repairPeople!='') and (acknowledgement is  null or acknowledgement='') or --> stage=2
+</select>
+<select id="selectFour"  resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain  where  level  in ('重大','特大') <!--and (uploadname is null or uploadname='') and (acknowledgement is not null) and (acknowledgement !='') and --> and stage=3
+</select>
+<select id="countFour" parameterType="com.jili.maintain.po.Maintain"   resultType="int">
+ 		select count(id) from maintain where level  in ('重大','特大') <!-- and (uploadname is null or uploadname='') and (acknowledgement is not null)and (acknowledgement !='')  --> and stage=3
+</select>
+<select id="countmAdd"    resultType="int">
+ 		select count(id) from maintain where  stage=0
+</select>
+<select id="selectFirstReject"  resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain where  stage=0
+ </select>
+
+<insert id="insertMaintain" parameterType="com.jili.maintain.po.Maintain">
+	insert into maintain values(id,
+	#{maintainNum},
+	#{equipmentNum},
+	#{equipmentName},
+	#{tjm},
+	#{equipmentType},
+	#{department},
+	#{maintainRequestPeople},
+	#{maintainRequestTime},
+	#{systemRequestTime},
+	#{experInfo},
+	#{malfunction},
+	#{repairTime},
+	#{malfunctionCause},
+	#{maintainMeans},
+	#{measure},
+	#{acknowledgement},
+	#{acknowledgementTIme},
+	#{acknowledgementuploadname},
+	#{acknowledgementuploaduuid},
+	#{repairPeople},
+	#{level},
+	#{uploadname},
+	#{uploaduuid},
+	#{cost},
+	#{mmodel},
+	#{qx},
+	#{beizhu},1)
+</insert>
+<insert id="maintainDelete" parameterType="com.jili.maintain.po.Maintain">
+    delete from  maintain where id =#{id}
+</insert>
+<select id="selectById" parameterType="int" resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain  where id =#{id}
+</select>
+<select id="selectByMnum" parameterType="String" resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain  where maintainNum =#{maintainNum}
+</select>
+<update id="editMaintainSumbit" parameterType="com.jili.maintain.po.Maintain">
+      update maintain 
+<set>
+  <if test="maintainNum != null"> maintainNum = #{maintainNum}, </if>
+  <if test="equipmentNum != null"> equipmentNum = #{equipmentNum}, </if>
+  <if test="equipmentName != null"> equipmentName = #{equipmentName,jdbcType=CHAR}, </if>
+  <if test="equipmentType != null"> equipmentType = #{equipmentType,jdbcType=VARCHAR}, </if>
+  <if test="department != null"> department = #{department,jdbcType=VARCHAR}, </if>
+  <if test="maintainRequestPeople != null"> maintainRequestPeople = #{maintainRequestPeople,jdbcType=VARCHAR}, </if>
+  <if test="maintainRequestTime != null"> maintainRequestTime = #{maintainRequestTime}, </if>
+  <if test="systemRequestTime != null"> systemRequestTime = #{systemRequestTime}, </if>
+  <if test="experInfo != null"> experInfo = #{experInfo,jdbcType=VARCHAR}, </if>
+  <if test="malfunction != null"> malfunction = #{malfunction,jdbcType=VARCHAR}, </if>
+  <if test="repairTime != null"> repairTime = #{repairTime}, </if>
+  <if test="acknowledgementTIme != null"> acknowledgementTIme = #{acknowledgementTIme}, </if>
+  <if test="acknowledgementuploadname != null"> acknowledgementuploadname = #{acknowledgementuploadname}, </if>
+  <if test="acknowledgementuploaduuid != null"> acknowledgementuploaduuid = #{acknowledgementuploaduuid}, </if>
+  <if test="malfunctionCause != null"> malfunctionCause = #{malfunctionCause,jdbcType=VARCHAR}, </if>
+  <if test="maintainMeans != null"> maintainMeans = #{maintainMeans,jdbcType=VARCHAR}, </if>
+  <if test="measure != null"> measure = #{measure,jdbcType=VARCHAR}, </if>
+  <if test="acknowledgement != null"> acknowledgement = #{acknowledgement}, </if>
+  <if test="repairPeople != null"> repairPeople = #{repairPeople}, </if>
+  <if test="level != null"> level = #{level}, </if>
+  <if test="uploadname != null"> uploadname = #{uploadname}, </if>
+  <if test="uploaduuid != null"> uploaduuid = #{uploaduuid}, </if>
+  <if test="cost != null"> cost = #{cost,jdbcType=VARCHAR}, </if>
+  <if test="mmodel != null">mmodel = #{mmodel,jdbcType=VARCHAR}, </if>
+  <if test="qx != null"> qx = #{qx,jdbcType=VARCHAR}, </if>
+  <if test="beizhu != null"> beizhu = #{beizhu,jdbcType=VARCHAR}, </if>
+  <if test="stage != null"> stage = #{stage}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+<update id="maintainUpdateByNum" parameterType="com.jili.maintain.po.Maintain">
+      update maintain 
+<set>
+  <if test="equipmentNum != null"> equipmentNum = #{equipmentNum}, </if>
+  <if test="equipmentName != null"> equipmentName = #{equipmentName,jdbcType=CHAR}, </if>
+  <if test="equipmentType != null"> equipmentType = #{equipmentType,jdbcType=VARCHAR}, </if>
+  <if test="department != null"> department = #{department,jdbcType=VARCHAR}, </if>
+  <if test="maintainRequestPeople != null"> maintainRequestPeople = #{maintainRequestPeople,jdbcType=VARCHAR}, </if>
+  <if test="maintainRequestTime != null"> maintainRequestTime = #{maintainRequestTime}, </if>
+  <if test="systemRequestTime != null"> systemRequestTime = #{systemRequestTime}, </if>
+  <if test="experInfo != null"> experInfo = #{experInfo,jdbcType=VARCHAR}, </if>
+  <if test="malfunction != null"> malfunction = #{malfunction,jdbcType=VARCHAR}, </if>
+  <if test="repairTime != null"> repairTime = #{repairTime}, </if>
+  <if test="acknowledgementTIme != null"> acknowledgementTIme = #{acknowledgementTIme}, </if>
+  <if test="acknowledgementuploadname != null"> acknowledgementuploadname = #{acknowledgementuploadname}, </if>
+  <if test="acknowledgementuploaduuid != null"> acknowledgementuploaduuid = #{acknowledgementuploaduuid}, </if>
+  <if test="malfunctionCause != null"> malfunctionCause = #{malfunctionCause,jdbcType=VARCHAR}, </if>
+  <if test="maintainMeans != null"> maintainMeans = #{maintainMeans,jdbcType=VARCHAR}, </if>
+  <if test="measure != null"> measure = #{measure,jdbcType=VARCHAR}, </if>
+  <if test="acknowledgement != null"> acknowledgement = #{acknowledgement}, </if>
+  <if test="repairPeople != null"> repairPeople = #{repairPeople}, </if>
+  <if test="level != null"> level = #{level}, </if>
+  <if test="uploadname != null"> uploadname = #{uploadname}, </if>
+  <if test="uploaduuid != null"> uploaduuid = #{uploaduuid}, </if>
+  <if test="cost != null"> cost = #{cost,jdbcType=VARCHAR}, </if>
+  <if test="mmodel != null">mmodel = #{mmodel,jdbcType=VARCHAR}, </if>
+  <if test="qx != null"> qx = #{qx,jdbcType=VARCHAR}, </if>
+  <if test="tjm != null"> tjm = #{tjm,jdbcType=VARCHAR}, </if>
+  <if test="stage != null"> stage = #{stage}, </if>
+</set>
+    where maintainNum = #{maintainNum} 
+</update>
+
+
+<update id="fourmaintainDelete" parameterType="int">
+      update maintain 
+<set>
+   uploadname = "", 
+  uploaduuid = "",
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<update id="ackmaintainDelete" parameterType="int">
+      update maintain 
+<set>
+  acknowledgementuploadname = "", 
+  acknowledgementuploaduuid = "", 
+   uploadname = "",
+  uploaduuid = "", 
+   acknowledgement = "",
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<select id="sumMaintain"  resultType="com.jili.maintain.po.Maintain">
+ 		<!-- select  sum(if(isnull(qx1),0,1)) as sumqx1 ,
+				sum(if(isnull(qx2),0,1)) as sumqx2 ,
+				sum(if(isnull(qx3),0,1)) as sumqx3 ,
+				sum(if(isnull(qx4),0,1)) as sumqx4 ,
+				sum(if(isnull(qx5),0,1)) as sumqx5 ,
+left(repairTime,7) as mouth 
+						from maintain where TO_DAYS(NOW()) - TO_DAYS(repairTime) &lt;= 365 
+GROUP BY left(repairTime,7)  -->
+select  sum(if(qx='保养不到位',1,0)) as sumqx1 ,
+				sum(if(qx='设计制造安装缺陷',1,0)) as sumqx2 ,
+				sum(if(qx='自然损耗',1,0)) as sumqx3 ,
+				sum(if(qx='使用不当',1,0)) as sumqx4 ,
+				sum(if(qx='其他',1,0)) as sumqx5 ,
+				sum(if(qx='维修不到位',1,0)) as sumqx6 ,
+				sum(if(qx='备件质量缺陷',1,0)) as sumqx7,
+				sum(if(qx='润滑不良',1,0)) as sumqx8 ,
+
+left(repairTime,7) as mouth 
+						from maintain where TO_DAYS(NOW()) - TO_DAYS(repairTime) &lt;= 365 
+GROUP BY left(repairTime,7)
+</select>
+
+<select id="maintainNum"  resultType="double">
+ 		select max(maintainNum)  from maintain
+</select>
+
+
+<update id="updateStage" parameterType="com.jili.maintain.po.Maintain">
+      update maintain 
+<set>
+   stage = #{stage}
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+
+<select id="selectSumList2_old"  resultType="com.jili.maintain.po.Maintain">
+ 		select *,TIMESTAMPDIFF(MINUTE,maintainRequestTime,repairTime) as timeCha from maintain_old
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+ 	</select>
+ 	
+ 	<select id="count_old" parameterType="com.jili.maintain.po.Maintain"   resultType="int">
+ 		select count(id) from maintain_old 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectMaintain_old" parameterType="com.jili.maintain.po.Maintain" resultType="com.jili.maintain.po.Maintain">
+ 		select *,TIMESTAMPDIFF(MINUTE,maintainRequestTime,repairTime) as timeCha from maintain_old 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+</select>
+<select id="selectByMnum_old" parameterType="String" resultType="com.jili.maintain.po.Maintain">
+ 		select * from maintain_old  where maintainNum =#{maintainNum}
+</select>
+
+<insert id="insertRejectInfo" parameterType="com.jili.maintain.po.RejectInfo">
+	insert into rejectinfo values(id,
+	#{mid},
+	#{content},
+	#{username},
+	#{message},
+	#{time}
+	)
+</insert>
+<select id="selectRejectInfoList" parameterType="int" resultType="com.jili.maintain.po.RejectInfo">
+ 		select * from rejectinfo  where mid =#{id}  order by  id desc
+</select>
+</mapper>

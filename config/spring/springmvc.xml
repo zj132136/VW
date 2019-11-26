@@ -1,0 +1,164 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd ">
+
+	<!-- 使用spring组件扫描 -->
+	<context:component-scan base-package="com.jili.user.controller"/>
+	<context:component-scan base-package="com.jili.plan.controller"/>
+	<context:component-scan base-package="com.jili.log.controller"/>
+	<context:component-scan base-package="com.jili.experiment.trouble.controller"/>
+	<context:component-scan base-package="com.jili.experiment.instrument.controller"/>
+	<context:component-scan base-package="com.jili.experiment.equipment.controller"/>
+	<context:component-scan base-package="com.jili.experiment.calibration.controller"/>
+	<context:component-scan base-package="com.jili.maintain.controller"/>
+	<context:component-scan base-package="com.jili.upload.controller"/>
+	<context:component-scan base-package="com.jili.experiment.experiment.controller"/>
+	<context:component-scan base-package="com.jili.experiment.sensor.controller"/>
+	<context:component-scan base-package="com.jili.run.controller"/>
+	<context:component-scan base-package="com.jili.upload.testReport.controller"/>
+	<context:component-scan base-package="com.jili.upload.testSummarize.controller"/>
+	<context:component-scan base-package="com.jili.test.controller"/>
+	<context:component-scan base-package="com.jili.upload.archives.controller"/>
+	<context:component-scan base-package="com.jili.upload.cnas.controller"/>
+	<context:component-scan base-package="com.jili.upload.baoyang.controller"/>
+	<context:component-scan base-package="com.jili.upload.testStandard.controller"/>
+	<context:component-scan base-package="com.jili.experiment.assemble.controller"/>
+	<context:component-scan base-package="com.jili.jgschedule.controller"/>
+	<context:component-scan base-package="com.jili.upload.yjmalfunction.controller"/>
+	<context:component-scan base-package="com.jili.login.comtroller"/>
+	<context:component-scan base-package="com.jili.upload.check.controller"/>
+	<context:component-scan base-package="com.jili.upload.DVP.controller"/>
+	<context:component-scan base-package="com.jili.right.controller"/>
+	<context:component-scan base-package="com.jili.fpdata.controller"/>
+	<context:component-scan base-package="com.jili.datadictionary.controller"/>
+	<context:component-scan base-package="com.jili.t5.controller"/>
+	<context:component-scan base-package="com.vw.engine.controller"/>
+	<!-- 开启aop，对类代理 -->
+	<!-- 可在controller中使用shiro注解配置权限  -->
+	<aop:config proxy-target-class="true"></aop:config>
+	<!-- 开启shiro注解支持 -->
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	
+
+	
+	<!-- 通过annotation-driven可以替代下边的处理器映射器和适配器 -->
+	<mvc:annotation-driven conversion-service="conversionService" validator="validator"/>
+	<!-- 配置视图解析器 要求将jstl的包加到classpath -->
+	<!-- ViewResolver -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- <property name="prefix" value="/WEB-INF/jsp/" /> -->
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+
+	<!-- 文件上传 -->
+	 <bean id="multipartResolver"    
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">    
+        <!-- one of the properties available; the maximum file size in bytes -->    
+        <property name="maxUploadSize" value="52428800" />    
+    </bean> 
+
+
+	
+
+	<!-- 转换器 -->
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean class="com.jili.jgschedule.controller.converter.CustomDateConverter"/>
+			</list>
+		</property>
+	</bean>
+	<!-- 全局异常处理器
+	只要实现HandlerExceptionResolver接口就是全局异常处理器
+	 -->
+	<bean class="com.jili.exception.CustomExceptionResolver">
+	</bean>
+
+
+	<!-- 校验器 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<!-- 校验器 -->
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<!-- 指定校验使用的资源文件，如果不指定则默认使用classpath下的ValidationMessages.properties -->
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	<!-- 校验错误信息配置文件 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<!-- 资源文件名 -->
+		<property name="basenames">
+			<list>
+				<value>classpath:CustomValidationMessages</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="false"/>  
+		<!-- 资源文件编码格式 -->
+		<property name="fileEncodings" value="utf-8" />
+		<!-- 对资源文件内容缓存时间，单位秒 -->
+		<property name="cacheSeconds" value="120" />
+	</bean>
+	
+  <!-- 支持返回json(避免IE在ajax请求时，返回json出现下载 ) -->  
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">  
+        <property name="messageConverters">  
+            <list>  
+                <ref bean="mappingJacksonHttpMessageConverter"/>  
+            </list>  
+        </property>  
+    </bean>  
+    <bean id="mappingJacksonHttpMessageConverter"  
+          class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">  
+        <property name="supportedMediaTypes">  
+            <list>  
+                <value>text/plain;charset=UTF-8</value>  
+                <value>application/json;charset=UTF-8</value>  
+            </list>  
+        </property>  
+    </bean>  
+    <!-- 支持返回json --> 
+    
+    
+   <!--     <mvc:interceptors>  
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>  
+    </mvc:interceptors>  
+  
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">  
+        <property name="defaultLocale" value="zh_CN"/>  
+    </bean>   -->
+    
+<!--     <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+     <property name="configLocation" value="classpath:ehcache.xml" />  
+   </bean>
+   
+   <ehcache:annotation-driven cache-manager="ehcacheManager" />  
+  
+    <ehcache:config cache-manager="ehcacheManager">  
+        <ehcache:evict-expired-elements interval="60" />  
+    </ehcache:config>   -->
+      
+ <!--       <bean id="ehcacheManager"  
+        class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+        <property name="configLocation" value="classpath:ehcache.xml" />  
+        
+    </bean>  --> 
+   
+   
+</beans>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.user.mapper.RoleMapper" >
+	<resultMap type="com.jili.user.po.RolePermiss" id="11equipmentResultMap">
+         <!-- 用id属性来映射主键字段 -->
+        <id property="id" column="id"/>
+        <!-- 用result属性来映射非主键字段 -->
+         <result property="sys_role_id" column="sys_role_id"/>   
+         <result property="sys_permission_id" column="sys_permission_id"/>   
+    </resultMap>
+
+ 	
+
+<insert id="insertRole" parameterType="com.jili.user.po.Role">
+	insert into sys_role values(id,#{rolename},#{describe})
+</insert>
+
+<select id="rolelist"  resultType="com.jili.user.po.Role">
+ 		select * from sys_role
+</select>
+<select id="countrole"  resultType="int">
+ 		select count(id) from sys_role
+ 			
+</select>
+<delete id="delRole" parameterType="java.lang.Integer">
+ delete  from sys_role  where id =#{id} 
+</delete>
+<delete id="delAllRole" parameterType="String">
+ delete  from sys_role_permission  where sys_role_id =#{roleid} 
+</delete>
+<insert id="addRole" parameterType="com.jili.user.po.RoleCustom">
+	insert into sys_role_permission values(id,#{roleid},#{permiss})
+</insert>
+<select id="roleshow" parameterType="com.jili.user.po.RolePermiss" resultMap="11equipmentResultMap">
+ 		select * from sys_role_permission where sys_role_id = #{sys_role_id}
+</select>
+	
+</mapper>

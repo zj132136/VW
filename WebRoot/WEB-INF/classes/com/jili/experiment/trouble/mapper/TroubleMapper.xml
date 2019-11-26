@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.trouble.mapper.TroubleMapper" >
+<sql id="select">
+		<if test="troublenum!=null and troublenum!=''">
+			troublenum like '%${troublenum}%'
+		</if>
+		<if test="experimentname!=null and experimentname!=''">
+			experimentname like '%${experimentname}%'
+		</if>
+		<if test="troubletype!=null and troubletype!=''">
+			and troubletype like '%${troubletype}%'
+		</if>
+		<if test="troublecause!=null and troublecause!=''">
+			and troublecause like '%${troublecause}%'
+		</if>
+		<if test="troublepeople!=null and troublepeople!=''">
+			and troublepeople like '%${troublepeople}%'
+		</if> 
+		
+	</sql>
+ 	<select id="selectTrouble" parameterType="com.jili.experiment.trouble.po.Trouble" resultType="com.jili.experiment.trouble.po.Trouble">
+ 		select * from trouble
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc		
+ 	</select>
+ 	<select id="countAllTrouble" parameterType="com.jili.experiment.trouble.po.Trouble" resultType="int">
+ 		select count(id) from trouble
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		
+ 	</select>
+ 	<select id="troubleSecond" parameterType="com.jili.experiment.trouble.po.Trouble" resultType="com.jili.experiment.trouble.po.Trouble">
+ 		select * from trouble	 where 	(troublepeople is not null or troublepeople!='') and troublemeasure is null or troublemeasure=''
+ 	</select>
+ 	<select id="countTroubleSecond" parameterType="com.jili.experiment.trouble.po.Trouble" resultType="int">
+ 		select count(id) from trouble	where 	(troublepeople is not null or troublepeople!='') and troublemeasure is null or troublemeasure=''
+ 	</select>
+ 	<select id="troubleThird" parameterType="com.jili.experiment.trouble.po.Trouble" resultType="com.jili.experiment.trouble.po.Trouble">
+ 		select * from trouble	 where 	(troublemeasure is not null or troublemeasure!='') and (troubleconclusion is null or troubleconclusion='')
+ 	</select>
+ 	<select id="countTroubleThird"  resultType="int">
+ 		select count(id) from trouble	where (troublemeasure is not null or troublemeasure!='') and (troubleconclusion is null or troubleconclusion='')
+ 	</select>
+	<insert id="insertTrouble" parameterType="com.jili.experiment.trouble.po.Trouble">
+	insert into trouble values(id,#{troublenum},#{troublecause},#{troubletype},#{experimentname},#{troublepeople},#{troubletime},#{troublequestion1},#{troublequestion2},#{troublequestion3},#{troublequestion4},#{troublemeasure},#{troubletime1},#{troubletime2},#{troubletime3},#{troubletime4},#{troubleconcernment},#{troubleconclusion},#{uploadname},#{uploaduuid})
+    </insert>
+    <select id="selectById" parameterType="int" resultType="com.jili.experiment.trouble.po.Trouble">
+ 		select * from trouble where id =#{id}	
+ 	</select>
+ 	 	<update id="troubleUpdate" parameterType="com.jili.experiment.trouble.po.Trouble">
+      update trouble 
+<set>
+  <if test="troublenum != null"> troublenum = #{troublenum,jdbcType=VARCHAR}, </if>
+  <if test="troublecause != null"> troublecause = #{troublecause,jdbcType=VARCHAR}, </if>
+  <if test="troubletype != null"> troubletype = #{troubletype}, </if>
+  <if test="troublepeople != null"> troublepeople = #{troublepeople}, </if>
+  <if test="troubletime != null"> troubletime = #{troubletime,jdbcType=CHAR}, </if>
+  <if test="troublequestion1 != null"> troublequestion1 = #{troublequestion1,jdbcType=CHAR}, </if>
+  <if test="troublequestion2 != null"> troublequestion2 = #{troublequestion2,jdbcType=CHAR}, </if>
+  <if test="troublequestion3 != null"> troublequestion3 = #{troublequestion3,jdbcType=VARCHAR}, </if>
+  <if test="troublequestion4 != null"> troublequestion4 = #{troublequestion4,jdbcType=VARCHAR}, </if>
+  <if test="troublemeasure != null"> troublemeasure = #{troublemeasure}, </if>
+  <if test="troubletime1 != null"> troubletime1 = #{troubletime1}, </if>
+  <if test="troubletime2 != null"> troubletime2 = #{troubletime2}, </if>
+  <if test="troubletime3 != null"> troubletime3 = #{troubletime3}, </if>
+  <if test="troubletime4 != null"> troubletime4 = #{troubletime4}, </if>
+  <if test="troubleconcernment != null"> troubleconcernment = #{troubleconcernment,jdbcType=VARCHAR}, </if>
+  <if test="troubleconclusion != null"> troubleconclusion = #{troubleconclusion,jdbcType=VARCHAR}, </if>
+
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+<update id="troubleDelete1" parameterType="java.lang.Integer">
+      update trouble 
+<set>
+ uploadname = "", 
+ uploaduuid = "", 
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+<delete id="troubleDeleteAll" parameterType="java.lang.Integer">
+ delete  from trouble  where id =#{id} 
+</delete>
+<select id="troubleMaxNum"  resultType="double">
+ 		select max(troublenum)  from trouble
+</select>
+</mapper>

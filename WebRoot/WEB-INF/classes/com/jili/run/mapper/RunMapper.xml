@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.run.mapper.RunMapper" >
+<!-- <cache /> -->
+    <sql id="select">
+		<if test="tjm!=null and tjm!=''">
+			r.tjm like '%${tjm}%'
+		</if>
+		<if test="type!=null and type!=''">
+		and	type like '%${type}%'
+		</if>
+		<if test="startTime!=null and startTime!='' ">  
+         and rundate >=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and rundate &lt;=#{endTime}
+        </if> 
+         <if test="tjmaccurate!=null and tjmaccurate!=''">  
+        and r.tjm =#{tjmaccurate}
+        </if> 
+        <if test="jmodel!=null and jmodel!=''">  
+        and e.jmodel like '%${jmodel}%'
+        </if> 
+	</sql>
+	<sql id="select1">
+		TO_DAYS(NOW()) - TO_DAYS(rundate) &lt;= 365
+		<if test="tjm!=null and tjm!=''">
+		and	r.tjm like '%${tjm}%'
+		</if>
+		
+		<if test="startTime!=null and startTime!='' ">  
+         and rundate>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and rundate&lt;=#{endTime}
+        </if> 
+        <if test="(type1!=null and type1!='')or(type2!=null and type2!='')or(type3!=null and type3!='')or(type4!=null and type4!='')or(type5!=null and type5!='')">
+		and	type in ('${type1}','${type2}','${type3}','${type4}','${type5}')
+		</if>
+		 <if test="tjmaccurate!=null and tjmaccurate!=''">  
+        and r.tjm =#{tjmaccurate}
+        </if> 
+         <if test="jmodel!=null and jmodel!=''">  
+        and e.jmodel like '%${jmodel}%'
+        </if> 
+		
+	</sql>	
+ <select id="selectSumList2"  resultType="com.jili.run.po.Run">
+ 		<!-- select * from run -->
+ 	select r.id,r.tjm,r.type,r.experTimekk,r.experTime,r.testMTime,r.prepareTime,
+ 		   r.freeTime,r.maintainTime,r.malfunctionTime,r.yjbyTime,r.lateTime,r.fixTime,r.rundate,
+ 	 e.jmodel from run r join experiment e
+      on (r.tjm = e.tjm)
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+ 	</select>
+ 	
+ 	  <resultMap id="userMap2" type="com.jili.run.po.Run">
+    <!-- 主键和非主键中属性与数据库字段无论是否相同都不能省略,必须全部列出来 -->
+    
+    <!-- 定义cn_user字段的加载不能省略，必须全部列出来 -->
+    <id property="id" column="id" />
+    <result property="tjm" column="tjm" />
+    <result property="type" column="type" />
+    <result property="experTimekk" column="experTimekk" />
+    <result property="experTime" column="experTime" />
+    <result property="testMTime" column="testMTime" />
+    <result property="prepareTime" column="prepareTime" />
+    <result property="freeTime" column="freeTime" />
+    <result property="maintainTime" column="maintainTime" />
+    <result property="malfunctionTime" column="malfunctionTime" />
+    <result property="yjbyTime" column="yjbyTime" />
+    <result property="lateTime" column="lateTime" />
+    <result property="fixTime" column="fixTime" />
+    <result property="rundate" column="rundate" />
+    <result property="jmodel" column="jmodel" />
+    
+    
+    
+    <!-- 定义cn_notebook字段的加载不能省略，必须全部列出来 -->
+    
+  </resultMap>
+ 	
+ 	<select id="selectRunById" parameterType="int" resultType="com.jili.run.po.Run">
+ 		select * from run
+ 		<where>
+ 			id = #{id}
+ 		</where>	
+ 	</select>
+ 	<select id="count" parameterType="com.jili.run.po.Run"   resultType="int">
+ 		select count(r.id) from run r  
+ 		<if test="jmodel!=null and jmodel!=''">  
+        join experiment e
+        </if> 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectRun" parameterType="com.jili.run.po.Run" resultType="com.jili.run.po.Run">
+ 		select * from run
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+	<select id="RunExcel"  resultType="com.jili.run.po.Run">
+ 		select  r.id,r.tjm,r.type,r.experTimekk,r.experTime,r.testMTime,r.prepareTime,
+ 		   r.freeTime,r.maintainTime,r.malfunctionTime,r.yjbyTime,r.lateTime,r.fixTime,r.rundate,
+ 	 e.jmodel from run r join experiment e on (r.tjm = e.tjm)
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+ 	</select>
+    <select id="selectSum" parameterType="com.jili.run.po.Run" resultType="com.jili.run.po.Run">
+ 		select sum(experTime) as experTime,sum(experTimekk) as experTimekk,sum(testMTime) as testMTime,sum(prepareTime) as prepareTime,sum(freeTime) as freeTime,sum(maintainTime) as maintainTime,sum(malfunctionTime) as malfunctionTime,sum(yjbyTime) as yjbyTime,sum(lateTime) as lateTime,sum(fixTime) as fixTime,tjm as tjm from run 
+ 		<where>
+ 			<include refid ="select1"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectSumList" parameterType="com.jili.run.po.Run" resultType="com.jili.run.po.Run">
+ 		select sum(experTime) as experTime,sum(experTimekk) as experTimekk,sum(testMTime) as testMTime,sum(prepareTime) as prepareTime,sum(freeTime) as freeTime,sum(maintainTime) as maintainTime,sum(malfunctionTime) as malfunctionTime,sum(yjbyTime) as yjbyTime,sum(lateTime) as lateTime,sum(fixTime) as fixTime,mouth  from (select *,left(rundate,7) as mouth from run  	
+ 		<where>
+ 			<include refid ="select1"></include>
+ 		</where>
+ 		) a GROUP BY mouth 
+ 	</select>
+ 	
+ <insert id="runAdd" parameterType="com.jili.run.po.Run">
+	insert into run values(id,#{tjm},#{type},#{experTimekk},#{experTime},#{testMTime},#{prepareTime},#{freeTime},#{maintainTime},#{malfunctionTime},#{yjbyTime},#{lateTime},#{rundate},#{fixTime})
+</insert>
+<insert id="runTypeAdd" parameterType="com.jili.run.po.RunType">
+	insert into runtype values(id,#{typeid},#{typename})
+</insert>
+<select id="average" parameterType="com.jili.run.po.Run" resultType="com.jili.run.po.Run">
+ 		select  ("平均值")     as tjm,
+ 				("")     as type,
+ 				avg(experTimekk) as experTimekk,
+ 		 		avg(experTime) as experTime,
+ 			  	avg(testMTime) as testMTime,
+ 				avg(prepareTime) as prepareTime,
+ 				avg(freeTime) as freeTime,
+ 				avg(maintainTime) as maintainTime,
+ 				avg(malfunctionTime) as malfunctionTime,
+ 				avg(yjbyTime) as yjbyTime,
+ 				avg(lateTime) as lateTime,
+ 				avg(fixTime) as fixTime
+        
+ 				from run r join experiment e  
+ 			<where>
+ 			
+ 			
+ 			<include refid ="select"></include>
+ 		</where>
+ 		</select>
+ 	<select id="sum" parameterType="com.jili.run.po.Run" resultType="com.jili.run.po.Run">
+ 		select ("总和") as tjm,("") as type,sum(experTimekk) as experTimekk,sum(experTime) as experTime,sum(testMTime) as testMTime,sum(prepareTime) as prepareTime,sum(freeTime) as freeTime,sum(maintainTime) as maintainTime,sum(malfunctionTime) as malfunctionTime,sum(yjbyTime) as yjbyTime,sum(lateTime) as lateTime,sum(fixTime) as fixTime from run r join experiment e 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	 <select id="selectRunToday" parameterType="String" resultType="com.jili.run.po.RunToday">
+ 		select * from runtoday where tjm=#{tjm}
+ 		
+ 	</select>
+ 	<insert id="insertRunToday" parameterType="com.jili.run.po.RunToday">
+	insert into runtoday values(id,#{tjm},#{type},#{experTimekk},#{experTime},#{testMTime},#{prepareTime},#{freeTime},#{maintainTime},#{malfunctionTime},#{yjbyTime},#{lateTime},#{rundate},#{fixTime},#{laststate},#{lasttime})
+	</insert>
+<update id="updateRunToday" parameterType="Map" >
+      update runtoday 
+<set>
+   ${lastStateLie} = runtoday.${lastStateLie} + #{hours}, 
+  <if test="_parameter.containsKey('lasttime')">  
+        lasttime = #{lasttime}, 
+    </if> 
+    <if test="_parameter.containsKey('laststate')">  
+        laststate = #{laststate}, 
+    </if> 
+ 
+</set>
+    where tjm = #{tjm,jdbcType=VARCHAR} 
+</update>
+
+
+<select id="SelectRunToday" parameterType="String" resultType="com.jili.run.po.RunToday">
+ 		select * from runtoday 
+ 		
+</select>
+<update id="runUpdate" parameterType="com.jili.run.po.Run" >
+      update run 
+<set>
+     <if test="experTime!= null">  
+        experTime =  #{experTime}, 
+    </if>
+    <if test="experTimekk!= null">  
+        experTimekk = #{experTimekk},  
+    </if>
+     <if test="testMTime!= null">  
+        testMTime =  #{testMTime}, 
+    </if>
+     <if test="prepareTime!= null">  
+        prepareTime = #{prepareTime}, 
+    </if>
+     <if test="freeTime!= null">  
+        freeTime =  #{freeTime}, 
+    </if>
+     <if test="maintainTime!= null">  
+        maintainTime = #{maintainTime}, 
+    </if>
+     <if test="malfunctionTime!= null">  
+        malfunctionTime =  #{malfunctionTime}, 
+    </if>
+    <if test="yjbyTime!= null">  
+        yjbyTime = #{yjbyTime},  
+    </if>
+     <if test="lateTime!= null">  
+        lateTime = #{lateTime},  
+    </if>
+    <if test="fixTime!= null">  
+        fixTime =  #{fixTime}, 
+    </if>
+</set>
+   		 where id = #{id} 
+</update>
+<update id="updateClearRunToday" parameterType="Map" >
+      update runtoday 
+<set>
+   
+  <if test="_parameter.containsKey('nowtime')">  
+        lasttime = #{nowtime}, 
+    </if> 
+    <if test="_parameter.containsKey('rundate')">  
+        rundate = #{rundate}, 
+    </if> 
+     <if test="_parameter.containsKey('experTime')">  
+        experTime = 0, 
+    </if>
+    <if test="_parameter.containsKey('experTimekk')">  
+        experTimekk = 0, 
+    </if>
+     <if test="_parameter.containsKey('testMTime')">  
+        testMTime = 0, 
+    </if>
+     <if test="_parameter.containsKey('prepareTime')">  
+        prepareTime = 0, 
+    </if>
+     <if test="_parameter.containsKey('freeTime')">  
+        freeTime = 0, 
+    </if>
+     <if test="_parameter.containsKey('maintainTime')">  
+        maintainTime = 0, 
+    </if>
+     <if test="_parameter.containsKey('malfunctionTime')">  
+        malfunctionTime = 0, 
+    </if>
+    <if test="_parameter.containsKey('yjbyTime')">  
+        yjbyTime = 0, 
+    </if>
+     <if test="_parameter.containsKey('lateTime')">  
+        lateTime =0, 
+    </if>
+    <if test="_parameter.containsKey('fixTime')">  
+        fixTime = 0, 
+    </if>
+    
+ 
+</set>
+    where tjm = #{tjm,jdbcType=VARCHAR} 
+</update>
+
+
+
+
+<select id="selectRunPeople" parameterType="String" resultType="com.jili.run.po.RunToday">
+ 		select * from runpeople where tjm=#{tjm}
+ 		
+ 	</select>
+ 	<insert id="insertRunPeople" parameterType="com.jili.run.po.RunToday">
+	insert into runpeople values(id,#{tjm},#{type},#{experTimekk},#{experTime},#{testMTime},#{prepareTime},#{freeTime},#{maintainTime},#{malfunctionTime},#{yjbyTime},#{lateTime},#{rundate},#{fixTime},#{laststate},#{lasttime})
+	</insert>
+<update id="updateRunPeople" parameterType="Map" >
+      update runpeople 
+<set>
+   ${lastStateLie} = runpeople.${lastStateLie} + #{hours}, 
+  <if test="_parameter.containsKey('lasttime')">  
+        lasttime = #{lasttime}, 
+    </if> 
+    <if test="_parameter.containsKey('laststate')">  
+        laststate = #{laststate}, 
+    </if> 
+</set>
+    where tjm = #{tjm,jdbcType=VARCHAR} 
+</update>
+<update id="updateClearRunPeople" parameterType="Map" >
+      update runpeople 
+<set>
+   
+  <if test="_parameter.containsKey('nowtime')">  
+        lasttime = #{nowtime}, 
+    </if> 
+    <if test="_parameter.containsKey('rundate')">  
+        rundate = #{rundate}, 
+    </if> 
+     
+        experTime = 0, 
+        experTimekk = 0, 
+        testMTime = 0, 
+        prepareTime = 0, 
+        freeTime = 0, 
+    
+        maintainTime = 0, 
+    
+        malfunctionTime = 0, 
+        yjbyTime=0,
+        lateTime =0, 
+     
+        fixTime = 0, 
+    
+</set>
+<if test="tjm!=null and tjm!='' ">  
+       where tjm = #{tjm,jdbcType=VARCHAR}  
+ </if> 
+    
+</update>
+<update id="updateRunPeopleTjm" parameterType="Map" >
+      update runpeople set tjm =#{tjm} where tjm =#{tjmold}
+
+</update>
+<update id="updateRunTodayTjm" parameterType="Map" >
+      update runtoday set runtoday.tjm = #{tjm} where tjm = #{tjmold}  
+
+</update>
+<delete id="runDelete">
+  delete from run where id = #{id}
+</delete>
+</mapper>

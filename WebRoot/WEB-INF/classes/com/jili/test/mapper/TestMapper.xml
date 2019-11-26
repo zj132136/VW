@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.test.mapper.TestMapper" >
+    <sql id="select">
+		<if test="tjm!=null and tjm!=''">
+			tjm like '%${tjm}%'
+		</if>
+		<if test="jtype!=null and jtype!='' ">  
+        and jtype like '%${jtype}%'   
+        </if>  
+        <if test="jtypenum!=null and jtypenum!='' ">  
+        and jtypenum like '%${jtypenum}%'   
+        </if> 
+        <if test="fdjbh!=null and fdjbh!=''">  
+        and fdjbh like '%${fdjbh}%'
+        </if>
+        <if test="tpeople!=null and tpeople!=''">  
+        and tpeople like '%${tpeople}%'
+        </if>
+        <if test="tproject!=null and tproject!=''">  
+        and tproject like '%${tproject}%'
+        </if>
+        <if test="ttestnum!=null and ttestnum!=''">  
+        and ttestnum like '%${ttestnum}%'
+        </if> 
+        <if test="startTime!=null and startTime!='' ">  
+         and ttime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and ttime&lt;=#{endTime}
+        </if> 
+	</sql>
+    <select id="test" parameterType="com.jili.test.po.Test" resultType="com.jili.test.po.Test">
+ 		select * from test 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+ 	</select>
+ 	<select id="countTest" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<insert id="testAdd" parameterType="com.jili.test.po.Test">
+	insert into test values(id,#{tjm},#{jtype},#{jtypenum},#{fdjbh},#{tproject},#{tpeople},#{ttime},#{ttestnum})
+	</insert>
+    <select id="testSumfdj01" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLA-3G10'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj02" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLB-4G13T'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj03" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLB-4G14T'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj04" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLC-4G15'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj05" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLC-4G18'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj06" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLD-4G20'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj07" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLD-4G24'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj08" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLE-4G18TD'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj09" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLF-3G10TD'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumfdj10" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='JLV-6G35V'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumbsq01" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='7DCT330'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="testSumbsq02" parameterType="com.jili.test.po.Test" resultType="int">
+ 		select count(id) from test 
+ 		<where>
+ 		jtypenum='7DCT330H'
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	
+</mapper>

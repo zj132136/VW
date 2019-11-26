@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.yjmalfunction.mapper.YjmalfunctionMapper" >
+
+
+<insert id="insertYjmalfunction" parameterType="com.jili.upload.yjmalfunction.po.Yjmalfunction">
+	insert into yjmalfunction values(#{id},#{yjtjm},#{yjproject},#{yjpeople},#{yjtime},#{yjnum},#{yjtestnum},#{uploadname},#{uploaduuid})
+</insert>
+
+<select id="selectYjmalfunction" parameterType="com.jili.upload.yjmalfunction.po.Yjmalfunction" resultType="com.jili.upload.yjmalfunction.po.Yjmalfunction">
+ 		select * from yjmalfunction	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<select id="countYjmalfunction" parameterType="com.jili.upload.yjmalfunction.po.Yjmalfunction" resultType="int">
+ 		select count(id) from yjmalfunction	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+</select>
+<sql id="select">
+		<if test="yjtjm!=null and yjtjm!=''">
+			yjtjm like '%${yjtjm}%'
+		</if>
+		<if test="yjproject!=null and yjproject!='' ">  
+         and yjproject like '%${yjproject}%'    
+        </if>  
+        <if test="yjpeople!=null and yjpeople!='' ">  
+         and yjpeople like '%${yjpeople}%'    
+        </if>
+        <if test="yjnum!=null and yjnum!='' ">  
+         and yjnum like '%${yjnum}%'    
+        </if> 
+        <if test="yjtestnum!=null and yjtestnum!='' ">  
+         and yjtestnum like '%${yjtestnum}%'    
+        </if>    
+	</sql>
+</mapper>

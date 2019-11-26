@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.check.mapper.CheckMapper" >
+<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> -->
+<!-- <cache/> -->
+ 	<select id="count" parameterType="com.jili.upload.check.po.Check"   resultType="int">
+ 		select count(id) from checkinfo where supload is null or supload=''	
+ 	</select>
+ 	<select id="checkById" parameterType="com.jili.upload.check.po.Check"   resultType="com.jili.upload.check.po.Check">
+ 		select * from checkinfo where id =#{id}
+ 	</select>
+<select id="selectCheck2"  parameterType="com.jili.upload.check.po.Check" resultType="com.jili.upload.check.po.Check">
+ 		select * from checkinfo where supload is null or supload=''
+ 		
+ 		order by  id desc
+</select>
+<select id="countList2" parameterType="com.jili.upload.check.po.Check"   resultType="int">
+ 		select count(id) from checkinfo where supload is null or supload=''
+ 		 
+ 	</select>
+<select id="selectCheck"  parameterType="com.jili.upload.check.po.Check" resultType="com.jili.upload.check.po.Check">
+ 		select * from checkinfo
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 		order by  id desc
+</select>
+<select id="countList" parameterType="com.jili.upload.check.po.Check"   resultType="int">
+ 		select count(id) from checkinfo 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+<sql id="select">
+		<if test="sname!=null and sname!=''">
+			sname like '%${sname}%'
+		</if>
+		
+		<if test="snum!=null and snum!=''">
+		and	snum like '%${snum}%'
+		</if>
+		<if test="startTime!=null and startTime!='' ">  
+         and sdate >=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and sdate &lt;=#{endTime}
+        </if> 
+	</sql>
+<insert id="checkAdd" parameterType="com.jili.upload.check.po.Check">
+	insert into checkinfo values(#{id},#{sname},#{stype},#{snum},#{speople},#{sdate},#{supload},#{suploaduuid},#{tjm},#{conclusion})
+</insert>
+<update id="checkUpdate" parameterType="com.jili.upload.check.po.Check">
+      update checkinfo 
+<set>
+
+  <if test="sname != null"> sname = #{sname}, </if>
+  <if test="stype != null"> stype = #{stype,jdbcType=CHAR}, </if>
+  <if test="snum != null"> snum = #{snum,jdbcType=VARCHAR}, </if>
+  <if test="speople != null"> speople = #{speople}, </if>
+  <if test="sdate != null"> sdate = #{sdate}, </if>
+    <if test="supload != null"> supload = #{supload}, </if>
+      <if test="suploaduuid != null"> suploaduuid = #{suploaduuid}, </if>
+
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<select id="sumCheck" parameterType="int" resultType="com.jili.upload.check.po.Check">
+ 		
+ 		select * from (
+select sum(if(isnull(supload),0,1)) as sumCheckOver ,left(sdate,7) as mouth 
+						from checkinfo where TO_DAYS(NOW()) - TO_DAYS(sdate) &lt;= 365 
+GROUP BY left(sdate,7)) a
+left join  
+(select sum(if(isnull(supload),1,0)) as sumCheck ,left(sdate,7) as mouth 
+						from checkinfo where TO_DAYS(NOW()) - TO_DAYS(sdate) &lt;= 365 
+GROUP BY left(sdate,7)) b on a.mouth = b.mouth	
+</select>
+</mapper>

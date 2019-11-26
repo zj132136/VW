@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.calibration.mapper.CalibrationMapper" >
+	<sql id="select">
+		<if test="tjm!=null and tjm!=''">
+			tjm like '%${tjm}%'
+		</if>
+		<if test="mchannelnum!=null and mchannelnum!='' ">  
+         and mchannelnum like '%${mchannelnum}%'    
+        </if>  
+        <if test="rchannelnum!=null and rchannelnum!='' ">  
+         and rchannelnum like '%${rchannelnum}%'    
+        </if>
+        <if test="cchannelnum!=null and cchannelnum!='' ">  
+         and cchannelnum like '%${cchannelnum}%'    
+        </if> 
+        
+	</sql>
+ 	
+ 	 <select id="calibrationList"  resultType="com.jili.experiment.calibration.po.Calibration">
+ 		select * from calibration
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="count" parameterType="com.jili.experiment.calibration.po.Calibration"   resultType="int">
+ 		select count(id) from calibration 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	
+ 	<select id="calibrationListOverTime"  resultType="com.jili.experiment.calibration.po.Calibration">
+ 		select * from calibration
+ 		<where>
+ 			<if test="time!=null and time!=''">  
+         cndate&lt;=#{time}
+        </if>
+ 		</where>
+ 	</select>
+ 	<select id="countOverTime" parameterType="com.jili.experiment.calibration.po.Calibration"   resultType="int">
+ 		select count(id) from calibration 
+ 		<where>
+ 			<if test="time!=null and time!=''">  
+         cndate&lt;=#{time}
+        </if>
+ 		</where>
+ 	</select>
+ 	
+ 	
+ 	
+<insert id="insertCalibration" parameterType="com.jili.experiment.calibration.po.Calibration">
+	insert into calibration values(id,#{tjm},#{mchannelnum},#{rchannelnum},#{cchannelnum},#{czname},#{ctname},#{czmodel},#{cmeasurescape},#{cprecision},#{calibrateresult},#{cproduct},#{clocus},#{cycle},#{cunit},#{ckind},#{cdate},#{cndate},#{cstate},#{cjnum},#{cremark})
+</insert>
+ <select id="selectByString" parameterType="int" resultType="com.jili.experiment.calibration.po.Calibration">
+ 		select * from calibration  where id =#{id} 		
+ </select>
+ 	<update id="editCalibrationSubmit" parameterType="com.jili.experiment.calibration.po.Calibration">
+      update calibration 
+<set>
+  <if test="tjm != null"> tjm = #{tjm,jdbcType=VARCHAR}, </if>
+  <if test="mchannelnum != null"> mchannelnum = #{mchannelnum}, </if>
+  <if test="rchannelnum != null"> rchannelnum = #{rchannelnum}, </if>
+  <if test="cchannelnum != null"> cchannelnum = #{cchannelnum}, </if>
+  <if test="czname != null"> czname = #{czname,jdbcType=CHAR}, </if>
+  <if test="ctname != null"> ctname = #{ctname,jdbcType=VARCHAR}, </if>
+  <if test="czmodel != null"> czmodel = #{czmodel,jdbcType=VARCHAR}, </if>
+  <if test="cmeasurescape != null"> cmeasurescape = #{cmeasurescape,jdbcType=VARCHAR}, </if>
+  <if test="cprecision != null"> cprecision = #{cprecision,jdbcType=VARCHAR}, </if>
+  <if test="calibrateresult != null"> calibrateresult = #{calibrateresult,jdbcType=VARCHAR}, </if>
+  <if test="cproduct != null"> cproduct = #{cproduct,jdbcType=VARCHAR}, </if>
+  <if test="clocus != null"> clocus = #{clocus,jdbcType=VARCHAR}, </if>
+  <if test="cycle != null"> cycle = #{cycle,jdbcType=VARCHAR}, </if>
+  <if test="cunit != null"> cunit = #{cunit,jdbcType=VARCHAR}, </if>
+  <if test="ckind != null"> ckind = #{ckind,jdbcType=VARCHAR}, </if>
+  <if test="cdate != null"> cdate = #{cdate}, </if>
+  <if test="cndate != null"> cndate = #{cndate}, </if>
+  <if test="cstate != null"> cstate = #{cstate,jdbcType=VARCHAR}, </if>
+  <if test="cjnum != null"> cjnum = #{cjnum,jdbcType=VARCHAR}, </if>
+  <if test="cremark != null"> cremark = #{cremark,jdbcType=VARCHAR}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+</mapper>

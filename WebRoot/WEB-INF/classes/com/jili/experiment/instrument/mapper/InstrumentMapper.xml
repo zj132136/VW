@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.instrument.mapper.InstrumentMapper" >
+<sql id="select">
+		<if test="iname!=null and iname!=''">
+			iname like '%${iname}%'
+		</if>
+		<if test="ignum!=null and ignum!=''">
+			and ignum like '%${ignum}%'
+		</if>
+		<if test="isnum!=null and isnum!=''">
+			and isnum like '%${isnum}%'
+		</if>
+		 
+		<if test="startTime!=null and startTime!='' ">  
+         and idtime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and idtime&lt;=#{endTime}
+        </if>  
+	</sql>
+ 	<select id="selectInstrument" parameterType="com.jili.experiment.instrument.po.Instrument" resultType="com.jili.experiment.instrument.po.Instrument">
+ 		select * from instrument
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countInstrument" parameterType="com.jili.experiment.instrument.po.Instrument" resultType="int">
+ 		select count(id) from instrument
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	 	<select id="selectInstrumentChildren" parameterType="com.jili.experiment.instrument.po.Instrument" resultType="com.jili.experiment.instrument.po.Instrument">
+ 		select * from instrumentChildren
+ 		<where>
+ 		iuuid = #{iuuid}
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countInstrumentChildren" parameterType="com.jili.experiment.instrument.po.Instrument" resultType="int">
+ 		select count(id) from instrumentChildren
+ 		<where>
+ 		iuuid = #{iuuid}
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+	<insert id="insertInstrument" parameterType="com.jili.experiment.instrument.po.Instrument">
+	insert into instrument values(id,#{icategory},#{iname},#{ignum},#{isnum},#{itype},#{ibrand},#{iadjust},#{istate},#{idebtor},#{idtime},#{iprotime},#{iremark},#{iuuid})
+    </insert>
+    <select id="selectByIdInstrument" parameterType="java.lang.Integer" resultType="com.jili.experiment.instrument.po.Instrument">
+ 		select * from instrument  where id =#{id} 
+ 			
+ 	</select>
+ 	
+ 	<update id="editInstrumentSumbit" parameterType="com.jili.experiment.instrument.po.Instrument">
+      update instrument 
+<set>
+<if test="icategory != null"> icategory = #{icategory,jdbcType=VARCHAR}, </if>
+<if test="iname != null"> iname = #{iname,jdbcType=VARCHAR}, </if>
+
+  <if test="ignum != null"> ignum = #{ignum,jdbcType=VARCHAR}, </if>
+  <if test="isnum != null"> isnum = #{isnum}, </if>
+  <if test="itype != null"> itype = #{itype,jdbcType=CHAR}, </if>
+  <if test="ibrand != null"> ibrand = #{ibrand,jdbcType=CHAR}, </if>
+  <if test="iadjust != null"> iadjust = #{iadjust,jdbcType=CHAR}, </if>
+  <if test="istate != null"> istate = #{istate,jdbcType=VARCHAR}, </if>
+  <if test="idebtor != null"> idebtor = #{idebtor,jdbcType=VARCHAR}, </if>
+  <if test="idtime != null"> idtime = #{idtime}, </if>
+  <if test="iprotime != null"> iprotime = #{iprotime}, </if>
+  <if test="iremark != null"> iremark = #{iremark,jdbcType=VARCHAR}, </if>
+  <if test="iuuid != null"> iuuid = #{iuuid,jdbcType=VARCHAR}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<select id="selectByIdInstrumentChildren" parameterType="java.lang.Integer" resultType="com.jili.experiment.instrument.po.Instrument">
+ 		select * from instrumentchildren  where id =#{id} 
+ 			
+ 	</select>
+ <update id="editInstrumentSumbitChildren" parameterType="com.jili.experiment.instrument.po.Instrument">
+      update instrumentchildren 
+<set>
+<if test="icategory != null"> icategory = #{icategory,jdbcType=VARCHAR}, </if>
+<if test="iname != null"> iname = #{iname,jdbcType=VARCHAR}, </if>
+
+  <if test="ignum != null"> ignum = #{ignum,jdbcType=VARCHAR}, </if>
+  <if test="isnum != null"> isnum = #{isnum}, </if>
+  <if test="itype != null"> itype = #{itype,jdbcType=CHAR}, </if>
+  <if test="ibrand != null"> ibrand = #{ibrand,jdbcType=CHAR}, </if>
+  <if test="iadjust != null"> iadjust = #{iadjust,jdbcType=CHAR}, </if>
+  <if test="istate != null"> istate = #{istate,jdbcType=VARCHAR}, </if>
+  <if test="idebtor != null"> idebtor = #{idebtor,jdbcType=VARCHAR}, </if>
+  <if test="idtime != null"> idtime = #{idtime}, </if>
+  <if test="iprotime != null"> iprotime = #{iprotime}, </if>
+  <if test="iremark != null"> iremark = #{iremark,jdbcType=VARCHAR}, </if>
+  <if test="iuuid != null"> iuuid = #{iuuid,jdbcType=VARCHAR}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<insert id="insertInstrumentChildren" parameterType="com.jili.experiment.instrument.po.Instrument">
+	insert into instrumentchildren values(id,#{icategory},#{iname},#{ignum},#{isnum},#{itype},#{ibrand},#{iadjust},#{istate},#{idebtor},#{idtime},#{iprotime},#{iremark},#{iuuid})
+    </insert>
+    
+    
+    
+    
+    <select id="selectInstrumentTree" parameterType="com.jili.experiment.instrument.po.Instrument"  resultMap="InstrumentTestResultMap">
+ 		select * from instrument_tree
+ 			
+ 	</select>
+ 	
+ 	<select id="countInstrumentTree" parameterType="com.jili.experiment.instrument.po.Instrument" resultType="int">
+ 		select count(id) from instrument_tree	
+ 	</select>
+ 	       
+        
+   <insert id="insertInstrumentTree" parameterType="com.jili.experiment.instrument.po.Instrument">
+	insert into instrument_tree values(id,#{icategory},#{iname},#{ignum},#{isnum},#{itype},#{ibrand},#{iadjust},#{istate},#{idebtor},#{idtime},#{iprotime},#{iremark},#{_parentId},#{iconCls},#{state})
+    </insert>  
+ 
+ 		<resultMap type="com.jili.experiment.instrument.po.Instrument" id="InstrumentTestResultMap">
+         <!-- 用id属性来映射主键字段 -->
+        <id property="id" column="id"/>
+        <!-- 用result属性来映射非主键字段 -->
+         <result property="icategory" column="icategory"/>
+         <result property="iname" column="iname"/>
+         <result property="ignum" column="ignum"/>
+         <result property="isnum" column="isnum"/>
+         <result property="itype" column="itype"/>
+         <result property="ibrand" column="ibrand"/>
+         <result property="iadjust" column="iadjust"/>
+         <result property="istate" column="istate"/> 
+         <result property="idebtor" column="idebtor"/>
+         <result property="idtime" column="idtime"/>
+         <result property="iprotime" column="iprotime"/>
+         <result property="iremark" column="iremark"/>
+         <result property="_parentId" column="_parentId"/>
+         <result property="iconCls" column="iconCls"/>
+         <result property="state" column="state"/>            
+    </resultMap>
+</mapper>

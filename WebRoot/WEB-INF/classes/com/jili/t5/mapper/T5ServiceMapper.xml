@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.t5.mapper.T5ServiceMapper" >
+	<sql id="select">
+		<if test="t5pname!=null and t5pname!=''">
+			t5_p_name like '%${t5pname}%'
+		</if>
+		
+	</sql>
+	<resultMap type="com.jili.t5.po.T5_Parameter" id="parameterMapper">
+		<result column="id" property="id"/>
+		<result column="t5_p_name" property="t5pname"/>
+		<result column="t5_upload_name" property="t5uploadname"/>
+	    <result column="t5_upload_uuid" property="t5uploaduuid"/>
+	</resultMap>
+
+
+ 	<select id="T5_ParameterList" parameterType="com.jili.t5.po.T5_Parameter" resultMap="parameterMapper">
+ 		select * from t5_parameter
+ 			<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<delete id="Parameter_del" parameterType="java.lang.Integer">
+	 	delete  from t5_parameter  where id =#{id} 
+	</delete>
+	<insert id="Parameter_add" parameterType="com.jili.t5.po.T5_Parameter">
+	insert into t5_parameter values(id,#{t5pname},#{t5uploadname},#{t5uploaduuid})
+	</insert>
+	<select id="countT5Parameter"  resultType="int">
+ 		select count(id) from t5_parameter
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+</mapper>

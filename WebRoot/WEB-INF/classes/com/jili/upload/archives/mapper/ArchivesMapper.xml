@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.archives.mapper.ArchivesMapper" >
+
+
+<insert id="insertArchives" parameterType="com.jili.upload.archives.po.Archives">
+	insert into archives values(#{id},#{tjm},#{type},#{ab},#{archivesname},#{uploaduuid})
+</insert>
+
+<select id="selectArchives" parameterType="com.jili.upload.archives.po.Archives" resultType="com.jili.upload.archives.po.Archives">
+ 		select * from archives	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+</select>
+<select id="countArchives" parameterType="com.jili.upload.archives.po.Archives" resultType="int">
+ 		select count(id) from archives	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+</select>
+<select id="selectById" parameterType="int" resultType="com.jili.upload.archives.po.Archives">
+ 		select * from archives	
+ 		<where>
+ 			id =#{id}
+ 		</where>	
+</select>
+
+	<sql id="select">
+		<if test="tjm!=null and tjm!=''">
+			tjm like '%${tjm}%'
+		</if>
+		<if test="type!=null and type!='' ">  
+         and type like '%${type}%'    
+        </if>  
+        <if test="archivesname!=null and archivesname!='' ">  
+         and archivesname like '%${archivesname}%'    
+        </if>
+         
+	</sql>
+	
+<update id="archivesUpdate" parameterType="com.jili.upload.archives.po.Archives">
+      update archives 
+<set>
+  <if test="tjm != null"> tjm = #{tjm,jdbcType=VARCHAR}, </if>
+  <if test="type != null"> type = #{type}, </if>
+  <if test="ab != null"> ab = #{ab,jdbcType=CHAR}, </if>
+  <if test="archivesname != null"> archivesname = #{archivesname,jdbcType=VARCHAR}, </if>
+  <if test="uploaduuid != null"> uploaduuid = #{uploaduuid,jdbcType=VARCHAR}, </if>
+
+
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>	
+<insert id="archivesDel" parameterType="int">
+    delete from  archives where id =#{id}
+</insert>
+</mapper>

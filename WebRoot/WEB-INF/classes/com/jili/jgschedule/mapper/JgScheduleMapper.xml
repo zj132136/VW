@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.jgschedule.mapper.JgScheduleMapper" >
+<sql id="select">
+		<if test="zxmname!=null and zxmname!=''">
+			zxmname like '%${zxmname}%'
+		</if>
+		<if test="xmname!=null and xmname!=''">
+			and xmname like '%${xmname}%'
+		</if>
+		<if test="pgpeople!=null and pgpeople!=''">
+			and pgpeople like '%${pgpeople}%'
+		</if>	
+		<if test="startTime!=null and startTime!='' ">  
+         and xmtime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and xmtime&lt;=#{endTime}
+        </if> 
+	</sql>
+ 	<select id="selectJgSchedule" parameterType="com.jili.jgschedule.po.JgSchedule" resultType="com.jili.jgschedule.po.JgSchedule">
+ 		select * from jgschedule
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countJgSchedule" parameterType="com.jili.jgschedule.po.JgSchedule" resultType="int">
+ 		select count(id) from jgschedule
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+	<insert id="insertJgSchedule" parameterType="com.jili.jgschedule.po.JgSchedule">
+	insert into  jgschedule values(#{id},#{lxnum},#{pmoney},#{xmname},#{xmtime},#{htnum},#{zxmname},#{htmoney},#{ztplan},#{bykhjd},#{byjzqk},#{byzp},#{nyplan},#{ppeople},#{pjpeople},#{pgpeople},#{remark},#{uploadname},#{uploaduuid},#{yeatMonth})
+    </insert>
+    <select id="selectAccessory" parameterType="int" resultType="com.jili.jgschedule.po.Accessory">
+ 		select * from jgschedulefj	where jid = #{id}
+ 	</select>
+    <insert id="insertAccessory" parameterType="com.jili.jgschedule.po.Accessory">
+	insert into  jgschedulefj values(#{id},#{aname},#{jid},#{remark},#{uploaduuid})
+    </insert>
+    <select id="selectById" parameterType="com.jili.jgschedule.po.JgSchedule" resultType="com.jili.jgschedule.po.JgSchedule">
+ 		select * from jgschedule where id =#{id}		
+ 	</select>
+ 	<update id="updateJgSchedule" parameterType="com.jili.jgschedule.po.JgSchedule">
+      update jgschedule 
+<set>
+  <if test="ztplan != null"> ztplan = #{ztplan,jdbcType=VARCHAR}, </if>
+  <if test="bykhjd != null"> bykhjd = #{bykhjd}, </if>
+  <if test="byjzqk != null"> byjzqk = #{byjzqk,jdbcType=CHAR}, </if>
+  <if test="byzp != null"> byzp = #{byzp,jdbcType=VARCHAR}, </if>
+  <if test="nyplan != null"> nyplan = #{nyplan,jdbcType=VARCHAR}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+<select id="sumJgSchedule"  resultType="com.jili.jgschedule.po.JgSchedule">
+ 		select  sum(case when byzp='正常执行' then 1 else 0 end) as sumzczx,
+ 			sum(case when byzp='延期执行' then 1 else 0 end) as sumyqzx,
+ 			sum(case when byzp='风险执行' then 1 else 0 end) as sumfxzx,
+ 			sum(case when byzp='超期完成' then 1 else 0 end) as sumcqwc,
+ 			sum(case when byzp='正常完成' then 1 else 0 end) as sumzcwc,left(yeatMonth,7) as mouth 
+ 		 from jgschedule	 
+			where TO_DAYS(NOW()) - TO_DAYS(yeatMonth) &lt;= 365
+				GROUP BY left(yeatMonth,7)
+</select>
+</mapper>

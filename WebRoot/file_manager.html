@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 文件管理器</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="file-manager">
+                            <h5>显示：</h5>
+                            <a href="file_manager.html#" class="file-control active">所有</a>
+                            <a href="file_manager.html#" class="file-control">文档</a>
+                            <a href="file_manager.html#" class="file-control">视频</a>
+                            <a href="file_manager.html#" class="file-control">图片</a>
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary btn-block">测量管理</button>
+                            <div class="hr-line-dashed"></div>
+                            <h5>文件夹</h5>
+                            <ul class="folder-list" style="padding: 0">
+                                <li><a href="file_manager.html"><i class="fa fa-folder"></i> 文件</a>
+                                </li>
+                                <li><a href="file_manager.html"><i class="fa fa-folder"></i> 图片</a>
+                                </li>
+                                <li><a href="file_manager.html"><i class="fa fa-folder"></i> Web页面</a>
+                                </li>
+                                <li><a href="file_manager.html"><i class="fa fa-folder"></i> 插图</a>
+                                </li>
+                                <li><a href="file_manager.html"><i class="fa fa-folder"></i> 电影</a>
+                                </li>
+                                <li><a href="file_manager.html"><i class="fa fa-folder"></i> 书籍</a>
+                                </li>
+                            </ul>
+                            <h5 class="tag-title">标签</h5>
+                            <ul class="tag-list" style="padding: 0">
+                                <li><a href="file_manager.html">爱人</a>
+                                </li>
+                                <li><a href="file_manager.html">工作</a>
+                                </li>
+                                <li><a href="file_manager.html">家庭</a>
+                                </li>
+                                <li><a href="file_manager.html">孩子</a>
+                                </li>
+                                <li><a href="file_manager.html">假期</a>
+                                </li>
+                                <li><a href="file_manager.html">音乐</a>
+                                </li>
+                                <li><a href="file_manager.html">照片</a>
+                                </li>
+                                <li><a href="file_manager.html">电影</a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9 animated fadeInRight">
+                <div class="row">
+                    <div class="col-sm-12">
+                      
+                        
+                       <div class="pd-20">
+	<div class="text-c"> 日期范围：
+		<input type="text" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" id="datemin" class="input-text Wdate" style="width:180px;">
+		-
+		<input type="text" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" id="datemin" class="input-text Wdate" style="width:180px;">
+	 	<input type="text" class="input-text" style="width:250px" placeholder="输入会员名称、电话、邮箱" id="" name="">
+		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜发动机履历</button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"> </span> <span class="r">共有数据：<strong>${countEngineTestlist}</strong> 条</span> </div>
+	<div class="mt-20">
+	<table class="table table-border table-bordered table-hover table-bg table-sort">
+		<thead>
+			<!-- <tr>
+				<th scope="col" colspan="6" class="text-c">试验信息</th>
+				<th scope="col" colspan="4" class="text-c">时间信息</th>
+				<th scope="col" colspan="1" class="text-c">操作管理</th>
+			</tr> -->
+			<tr class="text-c">
+				<!-- <th width="25"><input type="checkbox" name="" value=""></th> -->
+				<th width="80">ID</th>
+				<th width="40">备件名称</th>
+				<th width="40">备件编号</th>
+				<th width="40">日期</th>
+				<th width="40">操作员</th>
+				<th width="40">试验循环运行时间</th>
+				<th width="40">总运行时间</th>
+				<th width="40">测试名称</th>
+				<th width="40">操作</th>
+				<th width="100">操作</th>
+			</tr>
+		</thead>
+		<c:forEach items="${enginePartslist}" var="item">
+			<tr class="text-c">
+			<td>${item.id}</td>
+			<td>${item.partName}</td>
+		    <td>${item.partNum}</td>
+		    <td>${item.changePartTime}</td>
+		    <td>${item.operator}</td>
+		    <td>${item.testCycleRunTime}</td>
+		    <td>${item.totalTime}</td>
+		    <td>${item.testName}</td>
+		    <td>${item.partOperation}</td>
+		   
+			<td class="td-manage">
+			 <a title="编辑" href="javascript:;" onclick="admin_edit('发动机位置编辑','${baseurl}engine/engineEdit.action?id=${item.engineId}','2','800','500')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+			 <a title="删除" href="javascript:;" onclick="admin_del(this,${item.engineId})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+			  </td>
+			</tr>
+		</c:forEach>	
+	</table>
+	</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局js -->
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+
+
+    <!-- 自定义js -->
+    <script src="js/content.js?v=1.0.0"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            $('.file-box').each(function () {
+                animationHover(this, 'pulse');
+            });
+        });
+    </script>
+
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+    <!--统计代码，可删除-->
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.assemble.mapper.AssembleMapper" >
+	<sql id="select">
+		<if test="atjm!=null and atjm!=''">
+			atjm like '%${atjm}%'
+		</if>
+		<if test="aname!=null and aname!='' ">  
+         and aname like '%${aname}%'    
+        </if>  
+        <if test="anum!=null and anum!='' ">  
+         and anum like '%${anum}%'    
+         </if> 
+        <if test="startTime!=null and startTime!='' ">  
+         and adtime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and adtime&lt;=#{endTime}
+        </if>  
+	</sql>
+	<select id="selectTable" parameterType="com.jili.experiment.assemble.po.Assemble" resultType="String">
+ 		select COLUMN_NAME from information_schema.columns where table_name='assemble'
+ 		
+ 	</select>
+	
+ 	<select id="selectAssemble" parameterType="com.jili.experiment.assemble.po.Assemble" resultType="com.jili.experiment.assemble.po.Assemble">
+ 		select * from assemble	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	
+ 	<select id="selectAssembleNew" parameterType="com.jili.experiment.assemble.po.Assemble" resultType="com.jili.experiment.assemble.po.Assemble">
+ 		select * from assemble	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="countAssemble" parameterType="com.jili.experiment.assemble.po.Assemble" resultType="int">
+ 		select count(id) from assemble	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	
+<insert id="insertAssemble" parameterType="com.jili.experiment.assemble.po.Assemble">
+	insert into assemble values(id,#{atjm},#{aname},#{anum},#{astate},#{adebtor},#{adtime},#{aprotime},#{aremark})
+</insert>
+ <select id="selectById" parameterType="int" resultType="com.jili.experiment.assemble.po.Assemble">
+ 		select * from assemble  where id =#{id} 		
+ </select>
+ 	<update id="editAssembleSubmit" parameterType="com.jili.experiment.assemble.po.Assemble">
+      update assemble 
+<set>
+  <if test="atjm != null"> atjm = #{atjm,jdbcType=VARCHAR}, </if>
+
+  <if test="aname != null"> aname = #{aname,jdbcType=VARCHAR}, </if>
+  <if test="anum != null"> anum = #{anum,jdbcType=VARCHAR}, </if>
+  <if test="astate != null"> astate = #{astate,jdbcType=VARCHAR}, </if>
+  <if test="adebtor != null"> adebtor = #{adebtor,jdbcType=VARCHAR}, </if>
+  <if test="adtime != null"> adtime = #{adtime}, </if>
+  <if test="aprotime != null"> aprotime = #{aprotime}, </if>
+ 
+  <if test="aremark != null"> aremark = #{aremark,jdbcType=VARCHAR}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+</mapper>

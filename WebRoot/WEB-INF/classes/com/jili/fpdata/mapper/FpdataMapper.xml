@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.fpdata.mapper.FpdataMapper" >
+<sql id="select">
+		
+		<if test="TABLE_NAME!=null and TABLE_NAME!=''">
+		and	TABLE_NAME like '%${TABLE_NAME}%'
+		</if>
+</sql>
+	<resultMap type="com.jili.fpdata.po.Fpdata" id="fpdataResultMap">
+         <result property="table_name" column="table_name"/>     
+          <result property="create_time" column="create_time"/>    
+    </resultMap>
+    
+ 	<select id="selectFpdata" parameterType="com.jili.fpdata.po.Fpdata" resultMap="fpdataResultMap">
+ 		SELECT table_name,create_time FROM INFORMATION_SCHEMA.TABLES 
+ 		<where>
+ 		 TABLE_SCHEMA = 'tdm'
+ 			<!-- <include refid ="select"></include> -->
+ 		</where>	
+ 	</select>
+ 	<select id="count" parameterType="com.jili.fpdata.po.Fpdata" resultType="int">
+ 		select count(TABLE_NAME) from INFORMATION_SCHEMA.TABLES 
+ 		<where>
+ 		TABLE_SCHEMA = 'tdm'
+ 			<!-- <include refid ="select"></include> -->
+ 		</where>	
+ 	</select>
+	
+    <select id="selectTable"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select COLUMN_NAME from information_schema.columns where table_name=#{table}
+ 	</select>
+ 	<!-- <select id="selectTableData"    resultType="Map"  > 
+       select * from ${_parameter}
+ 	</select> -->
+ 	<select id="selectTableData"    parameterType="map" statementType="STATEMENT"  resultType="Map"> 
+       <![CDATA[  select * from ${table}]]>  
+ 	</select>
+ 	
+ 	 <select id="selectTableArray"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select COLUMN_NAME from information_schema.columns where table_name=#{table}
+ 	</select>
+ 	
+ 	
+ 	
+ 	<resultMap type="com.jili.fpdata.po.Fpdata" id="sqldataResultMap">
+         <result property="table_name" column="name"/>     
+         <result property="create_time" column="crdate"/>   
+    </resultMap>
+ 	<select id="SqlselectFpdata" parameterType="com.jili.fpdata.po.Fpdata"  resultMap="sqldataResultMap">
+ 		SELECT Name FROM SysObjects Where XType='U'  <!-- and name like '%${table_name}%' -->
+ 	</select>
+ 	<select id="Sqlcount" parameterType="com.jili.fpdata.po.Fpdata"  resultType="int">
+ 		select count(1) from sysobjects where xtype='U'	<!-- and name like '%${table_name}%' -->
+ 	</select>
+ 	<select id="SqlselectFpdatanew" parameterType="String"  resultMap="sqldataResultMap">
+ 		select name,crdate from sysobjects where xtype = 'U'  <!-- and name like '%${table_name}%' -->
+ 	</select>
+ 	<select id="Sqlcountnew" parameterType="String"  resultType="int">
+ 		select count(1) from sysobjects where xtype='U'	<!-- and name like '%${table_name}%' -->
+ 	</select>
+ 	 <select id="SqlselectTable"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select column_name from information_schema.columns where table_name=#{table}
+ 	</select>
+ 	
+ 	<select id="SqlselectTableData"    parameterType="map" statementType="STATEMENT"  resultType="Map"> 
+       <![CDATA[  select * from "${table}"]]>  
+ 	</select>
+ 	
+ 	<select id="SqlcountTableData"    parameterType="map" statementType="STATEMENT"  resultType="int"> 
+       <![CDATA[  select count(id) from "${table}"]]>  
+ 	</select>
+ 	
+ 	<select id="SqlselectTableArray"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select column_name from information_schema.columns where table_name=#{table}
+ 	</select>
+ 	
+ 	
+ 	
+ 	
+ 	 <select id="lieName"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select column_name from information_schema.columns where table_name= 'assemble'
+ 	</select>
+ 	<select id="TestselectTableData"       resultType="Map"> 
+       select * from assemble
+ 	</select>
+ 	<select id="TestcountTableData"       resultType="int"> 
+       select count(id) from assemble
+ 	</select>
+ 	
+ 	<!-- 实验参数查询 -->
+ 	<select id="testList"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select column_name from information_schema.columns where table_name='输入参数'
+ 	</select>
+ 	
+ 	<select id="testDataList"    parameterType="java.lang.String"  resultType="Map"> 
+        select * from 输入参数   where 数据文件 = #{table}
+ 	</select>
+ 	
+ 	<select id="parameterArray"  resultType="String" parameterType="java.lang.String"  >	
+ 	 select column_name from information_schema.columns where table_name='输入参数'
+ 	</select>
+ 	<select id="selectLie"   parameterType="map" resultType="Object" >	
+ 	    <![CDATA[  select "SPEED(r/min)",${liename} from "${table}"]]>  
+ 	</select>
+</mapper>

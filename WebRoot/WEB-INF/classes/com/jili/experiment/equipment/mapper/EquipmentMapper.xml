@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.equipment.mapper.EquipmentMapper" >
+<cache/>
+	<sql id="select">
+		<if test="e_zname!=null and e_zname!=''">
+			e_zname like '%${e_zname}%'
+		</if>
+		<if test="e_znum!=null and e_znum!='' ">  
+         and e_znum like '%${e_znum}%'    
+        </if>  
+        <if test="e_num!=null and e_num!='' ">  
+         and e_num like '%${e_num}%'    
+        </if>
+        <if test="e_product!=null and e_product!='' ">  
+         and e_product like '%${e_product}%'    
+        </if> 
+        <if test="e_gnum!=null and e_gnum!='' ">  
+         and e_gnum like '%${e_gnum}%'    
+        </if>
+         
+	</sql>
+	<resultMap type="com.jili.experiment.equipment.po.Equipment" id="equipmentResultMap">
+         <!-- 用id属性来映射主键字段 -->
+        <id property="id" column="id"/>
+        <!-- 用result属性来映射非主键字段 -->
+         <result property="e_num" column="e_num"/>
+         <result property="e_znum" column="e_znum"/>
+         <result property="e_zname" column="e_zname"/>
+         <result property="e_gnum" column="e_gnum"/>
+         <result property="e_compose" column="e_compose"/>
+         <result property="e_ability" column="e_ability"/>
+         <result property="e_parameter" column="e_parameter"/>
+         <result property="e_product" column="e_product"/>
+         <result property="e_provider" column="e_provider"/>
+         <result property="e_sort" column="e_sort"/>
+         <result property="e_ABC" column="e_ABC"/>
+         <result property="e_amount" column="e_amount"/>
+         <result property="e_cnum" column="e_cnum"/>
+         <result property="e_kdate" column="e_kdate"/>
+         <result property="e_tdate" column="e_tdate"/>
+         <result property="e_ydate" column="e_ydate"/>
+         <result property="e_odate" column="e_odate"/>
+         <result property="e_price" column="e_price"/>
+         <result property="e_currency" column="e_currency"/>
+         <result property="e_state" column="e_state"/>
+         <result property="e_ypart" column="e_ypart"/>
+         <result property="e_ddate" column="e_ddate"/>
+         <result property="e_place" column="e_place"/>
+         <result property="e_xpart" column="e_xpart"/>
+         <result property="e_remark" column="e_remark"/>
+         
+         
+    </resultMap>
+ 
+ 	<select id="selectEquipment" parameterType="com.jili.experiment.equipment.po.Equipment" resultMap="equipmentResultMap">
+ 		select * from equipment	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="countEquipment" parameterType="com.jili.experiment.equipment.po.Equipment" resultType="int">
+ 		select count(id) from equipment	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+<insert id="insertEquipment" parameterType="com.jili.experiment.equipment.po.Equipment">
+	insert into equipment values(id,#{e_num},#{e_znum},#{e_zname},#{e_gnum},#{e_compose},#{e_ability},#{e_parameter},#{e_product},#{e_provider},#{e_sort},#{e_ABC},#{e_amount},#{e_cnum},#{e_kdate},#{e_tdate},#{e_ydate},#{e_odate},#{e_price},#{e_currency},#{e_state},#{e_ypart},#{e_ddate},#{e_place},#{e_xpart},#{e_remark})
+</insert>
+ <select id="selectByString" parameterType="int" resultMap="equipmentResultMap">
+ 		select * from equipment  where id =#{id} 
+</select>
+<update id="editEquipmentSubmit" parameterType="com.jili.experiment.equipment.po.Equipment">
+      update equipment 
+<set>
+  <if test="e_znum != null"> e_znum = #{e_znum,jdbcType=VARCHAR}, </if>
+  <if test="e_zname != null"> e_zname = #{e_zname}, </if>
+  <if test="e_gnum != null"> e_gnum = #{e_gnum,jdbcType=CHAR}, </if>
+  <if test="e_compose != null"> e_compose = #{e_compose,jdbcType=VARCHAR}, </if>
+  <if test="e_ability != null"> e_ability = #{e_ability,jdbcType=VARCHAR}, </if>
+  <if test="e_parameter != null"> e_parameter = #{e_parameter,jdbcType=VARCHAR}, </if>
+  <if test="e_product != null"> e_product = #{e_product,jdbcType=VARCHAR}, </if>
+  <if test="e_provider != null"> e_provider = #{e_provider,jdbcType=VARCHAR}, </if>
+  <if test="e_sort != null"> e_sort = #{e_sort,jdbcType=VARCHAR}, </if>
+  <if test="e_ABC != null"> e_ABC = #{e_ABC,jdbcType=VARCHAR}, </if>
+  <if test="e_amount != null"> e_amount = #{e_amount,jdbcType=VARCHAR}, </if>
+  <if test="e_cnum != null"> e_cnum = #{e_cnum,jdbcType=VARCHAR}, </if>
+  <if test="e_kdate != null"> e_kdate = #{e_kdate}, </if>
+  <if test="e_tdate != null"> e_tdate = #{e_tdate}, </if>
+  <if test="e_ydate != null"> e_ydate = #{e_ydate}, </if>
+  <if test="e_odate != null"> e_odate = #{e_odate}, </if>
+  <if test="e_price != null"> e_price = #{e_price,jdbcType=VARCHAR}, </if>
+  <if test="e_currency != null"> e_currency = #{e_currency,jdbcType=VARCHAR}, </if>
+  <if test="e_state != null"> e_state = #{e_state,jdbcType=VARCHAR}, </if>
+  <if test="e_ypart != null"> e_ypart = #{e_ypart,jdbcType=VARCHAR}, </if>
+  <if test="e_ddate != null"> e_ddate = #{e_ddate}, </if>
+  <if test="e_place != null"> e_place = #{e_place,jdbcType=VARCHAR}, </if>
+  <if test="e_xpart != null"> e_xpart = #{e_xpart,jdbcType=VARCHAR}, </if>
+  <if test="e_remark != null"> e_remark = #{e_remark,jdbcType=VARCHAR}, </if>
+  
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+</mapper>

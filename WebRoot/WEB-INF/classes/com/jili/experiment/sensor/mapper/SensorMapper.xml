@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.experiment.sensor.mapper.SensorMapper" >
+<sql id="select">
+		
+		<if test="sysnum!=null and sysnum!=''">
+			and sysnum like '%${sysnum}%'
+		</if>
+		<if test="sbnum!=null and sbnum!=''">
+			and sbnum like '%${sbnum}%'
+		</if>
+		<if test="qzname!=null and qzname!=''">
+			and qzname like '%${qzname}%'
+		</if>
+		<if test="qcnum!=null and qcnum!=''">
+			and qcnum like '%${qcnum}%'
+		</if>
+		 
+		<if test="startTime!=null and startTime!='' ">  
+         and gtime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and gtime&lt;=#{endTime}
+        </if>  
+	</sql>
+	<select id="selectSensorHistory" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor2 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countSensorHistory" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="int">
+ 		select count(id) from sensor2 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectAllSensor" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="countAllSensor" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="int">
+ 		select count(id) from sensor 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+ 	<select id="selectSecondSensor" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor where hmnum is null or hmnum='' or hrnum is null or hrnum='' 
+ 	</select>
+ 	<select id="countSecondSensor" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="int">
+ 		select count(id) from sensor where hmnum is null or hmnum='' or hrnum is null or hrnum=''	
+ 	</select>
+ 	<select id="selectThirdSensor" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor where (hrnum is not NULL and hrnum !='') and	(hcnum is  null or hcnum='')  
+ 	
+ 	</select>
+ 	<select id="countThirdSensor" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="int">
+ 		select count(id) from sensor where	(hrnum is not NULL and hrnum !='') and	(hcnum is  null or hcnum='')  
+ 	
+ 	</select>
+	<insert id="SensorInsert" parameterType="com.jili.experiment.sensor.po.Sensor">
+	insert into sensor values(id,#{sysnum},#{sbnum},#{gtime},#{gpeople},#{qzname},#{qgtype},#{qproducer},#{qscope},#{qzprecision},#{qavailability},#{qcname},#{qmnum},#{qrnum},#{qcnum},#{hzname},#{hgtype},#{hscope},#{hzprecision},#{hcname},#{hmnum},#{hrnum},#{havailability},#{hproducer},#{hcnum})
+    </insert>
+    <insert id="SensorInsert2" parameterType="com.jili.experiment.sensor.po.Sensor">
+	insert into sensor2 values(id,#{sysnum},#{sbnum},#{gtime},#{gpeople},#{qzname},#{qgtype},#{qproducer},#{qscope},#{qzprecision},#{qavailability},#{qcname},#{qmnum},#{qrnum},#{qcnum},#{hzname},#{hgtype},#{hscope},#{hzprecision},#{hcname},#{hmnum},#{hrnum},#{havailability},#{hproducer},#{hcnum})
+    </insert>
+    <select id="selectByIdSensor" parameterType="java.lang.Integer" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor  where id =#{id} 
+ 	</select>
+ 	<select id="selectByIdHistorySensor" parameterType="java.lang.Integer" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor2  where id =#{id} 
+ 	</select>
+ 	<update id="SensorUpdate" parameterType="com.jili.experiment.sensor.po.Sensor">
+      update sensor 
+<set>
+  <if test="sysnum != null"> sysnum = #{sysnum,jdbcType=VARCHAR}, </if>
+  <if test="sbnum != null"> sbnum = #{sbnum,jdbcType=VARCHAR}, </if>
+  <if test="gtime != null"> gtime = #{gtime}, </if>
+  <if test="gpeople != null"> gpeople = #{gpeople}, </if>
+  <if test="qzname != null"> qzname = #{qzname,jdbcType=CHAR}, </if>
+  <if test="qgtype != null"> qgtype = #{qgtype,jdbcType=CHAR}, </if>
+  <if test="qproducer != null"> qproducer = #{qproducer,jdbcType=CHAR}, </if>
+  <if test="qzprecision != null"> qzprecision = #{qzprecision,jdbcType=VARCHAR}, </if>
+  <if test="qscope != null"> qscope = #{qscope,jdbcType=VARCHAR}, </if>
+  <if test="qavailability != null"> qavailability = #{qavailability,jdbcType=VARCHAR}, </if>
+  <if test="qcname != null"> qcname = #{qcname}, </if>
+  <if test="qmnum != null"> qmnum = #{qmnum}, </if>
+  <if test="qrnum != null"> qrnum = #{qrnum,jdbcType=VARCHAR}, </if>
+  <if test="qcnum != null"> qcnum = #{qcnum,jdbcType=VARCHAR}, </if>
+  <if test="hzname != null"> hzname = #{hzname,jdbcType=VARCHAR}, </if>
+  <if test="hgtype != null"> hgtype = #{hgtype,jdbcType=VARCHAR}, </if>
+  <if test="hzprecision != null"> hzprecision = #{hzprecision,jdbcType=VARCHAR}, </if>
+  <if test="hscope != null"> hscope = #{hscope,jdbcType=VARCHAR}, </if>
+  <if test="hcname != null"> hcname = #{hcname,jdbcType=VARCHAR}, </if>
+  <if test="hmnum != null"> hmnum = #{hmnum,jdbcType=VARCHAR}, </if>
+  <if test="hrnum != null"> hrnum = #{hrnum,jdbcType=VARCHAR}, </if>
+  <if test="havailability != null"> havailability = #{havailability,jdbcType=VARCHAR}, </if>
+  <if test="hproducer != null"> hproducer = #{hproducer,jdbcType=VARCHAR}, </if>
+  <if test="hcnum != null"> hcnum = #{hcnum,jdbcType=VARCHAR}, </if>
+</set>
+    where id = #{id,jdbcType=INTEGER} 
+</update>
+
+<select id="SensorExcel" parameterType="com.jili.experiment.sensor.po.Sensor" resultType="com.jili.experiment.sensor.po.Sensor">
+ 		select * from sensor 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+</mapper>

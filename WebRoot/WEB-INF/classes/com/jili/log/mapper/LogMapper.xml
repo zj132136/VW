@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.log.mapper.LogMapper" >
+<sql id="select">
+		
+		<if test="fdjbh!=null and fdjbh!=''">
+			fdjbh like '%${fdjbh}%'
+		</if>
+		<if test="project!=null and project!=''">
+			and project like '%${project}%'
+		</if>
+		<if test="testpeople!=null and testpeople!=''">
+			and testpeople like '%${testpeople}%'
+		</if>
+		<if test="miaoshu!=null and miaoshu!=''">
+			and miaoshu like '%${miaoshu}%'
+		</if>
+		<if test="ttestnum!=null and ttestnum!=''">
+			and ttestnum like '%${ttestnum}%'
+		</if>
+		<if test="tjm!=null and tjm!=''">
+			and tjm like '%${tjm}%'
+		</if>
+		 <if test="tjmaccurate!=null and tjmaccurate!=''">
+			and tjm = #{tjmaccurate}
+		</if>
+		<if test="startTime!=null and startTime!='' ">  
+         and stime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and stime&lt;=#{endTime}
+        </if>  
+		
+	</sql>
+<sql id="selectNowMax">
+		
+		<if test="fdjbh!=null and fdjbh!=''">
+		 	and	fdjbh like '%${fdjbh}%'
+		</if>
+		<if test="project!=null and project!=''">
+			and project like '%${project}%'
+		</if>
+		<if test="testpeople!=null and testpeople!=''">
+			and testpeople like '%${testpeople}%'
+		</if>
+		<if test="miaoshu!=null and miaoshu!=''">
+			and miaoshu like '%${miaoshu}%'
+		</if>
+		<if test="ttestnum!=null and ttestnum!=''">
+			and ttestnum like '%${ttestnum}%'
+		</if>
+		<if test="tjm!=null and tjm!=''">
+			and tjm like '%${tjm}%'
+		</if>
+		<if test="tjmaccurate!=null and tjmaccurate!=''">
+			and tjm = #{tjmaccurate}
+		</if>
+		 
+		<if test="startTime!=null and startTime!='' ">  
+         and stime>=#{startTime}    
+        </if>  
+        <if test="endTime!=null and endTime!=''">  
+        and stime&lt;=#{endTime}
+        </if> 
+        <if test="projectOrderNum!=null and projectOrderNum!=''">
+			and projectOrderNum like '%${projectOrderNum}%'
+		</if> 
+		
+	</sql>
+ 	<select id="selectLog" parameterType="com.jili.log.po.Log" resultType="com.jili.log.po.Log">
+ 		select * from log
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 		order by  id desc
+ 	</select>
+ 	<select id="logNowMax" parameterType="com.jili.log.po.Log" resultType="com.jili.log.po.Log">
+ 		select id,a.ttestnum,fdjbh,fdjxh,tjm,stime,project,a.ztime,todaytime,etime,miaoshu,phenomenon,shebeiph,measure,ttime,testpeople,engineer,xntime,njtime,carnum,projectOrderNum from 
+			(select ttestnum,MAX(CAST(ztime as  decimal(10,3)))ztime from log group by ttestnum) a
+			left join log b on a.ttestnum=b.ttestnum and a.ztime =b.ztime
+			
+			<where>
+			a.ttestnum is not null and b.ttestnum is not null  and a.ttestnum !='' and b.ttestnum !=''
+ 				<include refid ="selectNowMax"></include>
+ 			</where>	
+ 		 order by  b.stime desc
+ 	</select>
+ 	<select id="countlogNowMax" parameterType="com.jili.log.po.Log" resultType="int">
+ 		select COUNT(*) from 
+			(select ttestnum,MAX(CAST(ztime as  decimal(10,3)))ztime from log group by ttestnum) a
+			left join log b on a.ttestnum=b.ttestnum and a.ztime =b.ztime
+			<where>
+			a.ttestnum is not null and b.ttestnum is not null  and a.ttestnum !='' and b.ttestnum !=''
+ 				<include refid ="selectNowMax"></include>
+ 			</where>
+ 	</select>
+ 	
+ 	<select id="selectLogExcel" parameterType="com.jili.log.po.Log" resultType="com.jili.log.po.Log">
+ 		select * from log
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 		order by  id desc
+ 	</select>
+ 	<select id="selectLogNowMaxExcel" parameterType="com.jili.log.po.Log" resultType="com.jili.log.po.Log">
+ 		select id,a.ttestnum,fdjbh,fdjxh,tjm,stime,project,a.ztime,todaytime,etime,miaoshu,phenomenon,shebeiph,measure,ttime,testpeople,engineer,xntime,njtime,carnum,projectOrderNum from 
+			(select ttestnum,MAX(CAST(ztime as  decimal(10,3)))ztime from log group by ttestnum) a
+			left join log b on a.ttestnum=b.ttestnum and a.ztime =b.ztime
+			
+			<where>
+			a.ttestnum is not null and b.ttestnum is not null  and a.ttestnum !='' and b.ttestnum !=''
+ 				<include refid ="selectNowMax"></include>
+ 			</where>	
+ 		 order by  b.stime desc
+ 	</select>
+ 	<select id="selectLogById"  resultType="com.jili.log.po.Log">
+ 		select * from log where id =#{id}
+ 			
+ 	</select>
+ 	
+ 	<select id="count" parameterType="com.jili.log.po.Log" resultType="int">
+ 		select count(id) from log
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>	
+ 	</select>
+	<insert id="insertLog" parameterType="com.jili.log.po.Log">
+	insert into log values(id,#{ttestnum},#{fdjbh},#{fdjxh},#{tjm},#{stime},#{project},#{ztime},#{todaytime},#{etime},#{miaoshu},#{phenomenon},#{shebeiph},#{measure},#{ttime},#{testpeople},#{engineer},#{xntime},#{njtime},#{carnum},#{projectOrderNum})
+    </insert>
+    <delete id="logDelete" parameterType="com.jili.log.po.Log">
+ 	DELETE  from log where id =#{id}
+ 	</delete>
+ 
+ 
+ 	<select id="selectLogToday" parameterType="com.jili.log.po.Log" resultType="com.jili.log.po.Log">
+ 		select * from logtoday	where tjm = #{tjm}
+ 	</select>
+ 	<select id="selectLogTemporary" parameterType="String" resultType="com.jili.log.po.Log">
+ 		select * from log_Temporary	where tjm = #{tjm}
+ 	</select>
+ 	<insert id="insertLogToday" parameterType="com.jili.log.po.Log">
+	insert into logtoday values(id,#{ttestnum},#{fdjbh},#{fdjxh},#{tjm},#{stime},#{project},#{ztime},#{todaytime},#{etime},#{miaoshu},#{phenomenon},#{shebeiph},#{measure},#{ttime},#{testpeople},#{engineer},#{xntime},#{njtime},#{carnum},#{projectOrderNum})
+    </insert>
+    <insert id="insertLogTemporary" parameterType="com.jili.log.po.Log">
+	insert into log_Temporary values(id,#{ttestnum},#{fdjbh},#{fdjxh},#{tjm},#{stime},#{project},#{ztime},#{todaytime},#{etime},#{miaoshu},#{phenomenon},#{shebeiph},#{measure},#{ttime},#{testpeople},#{engineer},#{xntime},#{njtime},#{carnum},#{projectOrderNum})
+    </insert>
+    <update id="updateLogToday" parameterType="com.jili.log.po.Log">
+      update logtoday 
+		<set>
+		  <if test="ttestnum != null"> ttestnum = #{ttestnum,jdbcType=VARCHAR}, </if>
+		  <if test="fdjbh != null"> fdjbh = #{fdjbh,jdbcType=VARCHAR}, </if>
+		  <if test="fdjxh != null"> fdjxh = #{fdjxh,jdbcType=VARCHAR}, </if>
+		  <if test="stime != null"> stime = #{stime,jdbcType=VARCHAR}, </if>
+		  <if test="project != null"> project = #{project,jdbcType=VARCHAR}, </if>  
+		  <if test="ztime != null"> ztime = #{ztime,jdbcType=VARCHAR}, </if>  
+		  <if test="todaytime != null"> todaytime = #{todaytime,jdbcType=VARCHAR}, </if> 
+		  <if test="etime != null"> etime = #{etime,jdbcType=VARCHAR}, </if> 
+		  <if test="miaoshu != null"> miaoshu = #{miaoshu}, </if> 
+		  <if test="phenomenon != null"> phenomenon = #{phenomenon}, </if> 
+		  <if test="shebeiph != null"> shebeiph = #{shebeiph}, </if> 
+		  <if test="measure != null"> measure = #{measure}, </if> 
+		  <if test="ttime != null"> ttime = #{ttime}, </if> 
+		  <if test="njtime != null"> njtime = #{njtime}, </if> 
+		  <if test="xntime != null"> xntime = #{xntime}, </if> 
+		  <if test="testpeople != null"> testpeople = #{testpeople}, </if> 
+		  <if test="engineer != null"> engineer = #{engineer}, </if> 
+		  <if test="carnum != null"> carnum = #{carnum}, </if> 
+		   
+		</set>
+    where tjm = #{tjm} 
+	</update>
+	<update id="updateLog" parameterType="com.jili.log.po.Log">
+      update log
+		<set>
+		  <if test="ttestnum != null"> ttestnum = #{ttestnum,jdbcType=VARCHAR}, </if>
+		  <if test="fdjbh != null"> fdjbh = #{fdjbh,jdbcType=VARCHAR}, </if>
+		  <if test="fdjxh != null"> fdjxh = #{fdjxh,jdbcType=VARCHAR}, </if>
+		  <if test="stime != null"> stime = #{stime,jdbcType=VARCHAR}, </if>
+		  <if test="project != null"> project = #{project,jdbcType=VARCHAR}, </if>  
+		  <if test="ztime != null"> ztime = #{ztime,jdbcType=VARCHAR}, </if>  
+		  <if test="todaytime != null"> todaytime = #{todaytime,jdbcType=VARCHAR}, </if> 
+		  <if test="etime != null"> etime = #{etime,jdbcType=VARCHAR}, </if> 
+		  <if test="miaoshu != null"> miaoshu = #{miaoshu}, </if> 
+		  <if test="phenomenon != null"> phenomenon = #{phenomenon}, </if> 
+		  <if test="shebeiph != null"> shebeiph = #{shebeiph}, </if> 
+		  <if test="measure != null"> measure = #{measure}, </if> 
+		  <if test="ttime != null"> ttime = #{ttime}, </if> 
+		  <if test="njtime != null"> njtime = #{njtime}, </if> 
+		  <if test="xntime != null"> xntime = #{xntime}, </if> 
+		  <if test="testpeople != null"> testpeople = #{testpeople}, </if> 
+		  <if test="engineer != null"> engineer = #{engineer}, </if> 
+		  <if test="carnum != null"> carnum = #{carnum}, </if>  
+		</set>
+    where id = #{id} 
+	</update>
+
+ <update id="updateLogTemporary" parameterType="com.jili.log.po.Log">
+      update log_Temporary 
+<set>
+  <if test="ttestnum != null"> ttestnum = #{ttestnum,jdbcType=VARCHAR}, </if>
+		  <if test="fdjbh != null"> fdjbh = #{fdjbh,jdbcType=VARCHAR}, </if>
+		  <if test="fdjxh != null"> fdjxh = #{fdjxh,jdbcType=VARCHAR}, </if>
+		  <if test="stime != null"> stime = #{stime,jdbcType=VARCHAR}, </if>
+		  <if test="project != null"> project = #{project,jdbcType=VARCHAR}, </if>  
+		  <if test="ztime != null"> ztime = #{ztime,jdbcType=VARCHAR}, </if>  
+		  <if test="todaytime != null"> todaytime = #{todaytime,jdbcType=VARCHAR}, </if> 
+		  <if test="etime != null"> etime = #{etime,jdbcType=VARCHAR}, </if> 
+		  <if test="miaoshu != null"> miaoshu = #{miaoshu}, </if> 
+		  <if test="phenomenon != null"> phenomenon = #{phenomenon}, </if> 
+		  <if test="shebeiph != null"> shebeiph = #{shebeiph}, </if> 
+		  <if test="measure != null"> measure = #{measure}, </if> 
+		  <if test="ttime != null"> ttime = #{ttime}, </if> 
+		  <if test="njtime != null"> njtime = #{njtime}, </if> 
+		  <if test="xntime != null"> xntime = #{xntime}, </if> 
+		  <if test="testpeople != null"> testpeople = #{testpeople}, </if> 
+		  <if test="engineer != null"> engineer = #{engineer}, </if>  
+		  <if test="carnum != null"> carnum = #{carnum}, </if> 
+</set>
+    where tjm = #{tjm} 
+</update>
+ <delete id="deleteLogTemporary" parameterType="com.jili.log.po.Log">
+ 	DELETE  from log_Temporary where tjm =#{tjm}
+ 	</delete>
+  <insert id="insertLogTemporaryToLog" parameterType="com.jili.log.po.Log">
+	INSERT INTO log(ttestnum,fdjbh,fdjxh,tjm,stime,project,ztime,todaytime,etime,miaoshu,phenomenon,shebeiph,measure,ttime,testpeople,engineer,xntime,njtime,carnum) 
+		SELECT ttestnum,fdjbh,fdjxh,tjm,stime,project,ztime,todaytime,etime,miaoshu,phenomenon,shebeiph,measure,ttime,testpeople,engineer,xntime,njtime,carnum from log_temporary
+  </insert>	
+ 	<delete id="deleteAllLogTemporary" parameterType="com.jili.log.po.Log">
+ 	DELETE  from log_Temporary 
+ 	</delete>
+ 	<insert id="updateAllLogtoday" parameterType="com.jili.log.po.Log">
+	INSERT INTO logtoday(ttestnum,fdjbh,fdjxh,tjm,stime,project,ztime,todaytime,etime,miaoshu,phenomenon,shebeiph,measure,ttime,testpeople,engineer,xntime,njtime,carnum) 
+		SELECT ttestnum,fdjbh,fdjxh,tjm,stime,project,ztime,todaytime,etime,miaoshu,phenomenon,shebeiph,measure,ttime,testpeople,engineer,xntime,njtime,carnum from log_temporary
+  </insert>	
+ 	<delete id="deleteAllLogtoday" parameterType="com.jili.log.po.Log">
+ 	DELETE  from logtoday 
+ 	</delete>
+</mapper>

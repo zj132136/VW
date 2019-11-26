@@ -1,0 +1,52 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd ">
+<!-- 商品管理 的service -->
+<bean id="UserService" class="com.jili.user.service.impl.UserServiceImpl"/>
+<bean id="RoleService" class="com.jili.user.service.impl.RoleServiceImpl"/>
+<bean id="PlanService" class="com.jili.plan.service.impl.PlanServiceImpl"/>
+
+<bean id="LogService" class="com.jili.log.service.impl.LogServiceImpl"/>
+<bean id="TroubleService" class="com.jili.experiment.trouble.service.impl.TroubleServiceImpl"/>
+<bean id="InstrumentService" class="com.jili.experiment.instrument.service.impl.InstrumentServiceImpl"/>
+
+<bean id="Calibration" class="com.jili.experiment.calibration.service.impl.CalibrationServiceImpl"/>
+<bean id="EquipmentService" class="com.jili.experiment.equipment.service.impl.EquipmentServiceImpl"/>
+<bean id="MaintainService" class="com.jili.maintain.service.impl.MaintainServiceImpl"/>
+<bean id="ReplacePartService" class="com.jili.maintain.service.impl.ReplacePartServiceImpl"/>
+
+<bean id="ExperimentService" class="com.jili.experiment.experiment.service.impl.ExperimentServiceImpl"/>
+<bean id="RunService" class="com.jili.run.service.impl.RunServiceImpl"/>
+<bean id="TestReportService" class="com.jili.upload.testReport.service.impl.TestReportServiceImpl"/>
+<bean id="TestSummarizeService" class="com.jili.upload.testSummarize.service.impl.TestSummarizeServiceImpl"/>
+<bean id="TestService" class="com.jili.test.service.impl.TestServiceImpl"/>
+<bean id="ArchivesService" class="com.jili.upload.archives.service.impl.ArchivesServiceImpl"/>
+<bean id="CnasService" class="com.jili.upload.cnas.service.impl.CnasServiceImpl"/>
+<bean id="TestStandardService" class="com.jili.upload.testStandard.service.impl.TestStandardServiceImpl"/>
+<bean id="AssembleService" class="com.jili.experiment.assemble.service.impl.AssembleServiceImpl"/>
+<bean id="JgScheduleService" class="com.jili.jgschedule.servicce.impl.JgScheduleServiceImpl"/>
+<bean id="YjmalfunctionService" class="com.jili.upload.yjmalfunction.service.impl.YjmalfunctionServiceImpl"/>
+<bean id="SensorService" class="com.jili.experiment.sensor.service.impl.SensorServiceImpl"/>
+<bean id="BaoyangService" class="com.jili.upload.baoyang.service.impl.BaoyangServiceImpl"/>
+<bean id="CheckService" class="com.jili.upload.check.service.impl.CheckServiceImpl"/>
+<bean id="DvpService" class="com.jili.upload.DVP.service.impl.DvpServiceImpl"/>
+<bean id="SysService" class="com.jili.login.service.impl.SysServiceImpl"/>
+<bean id="StatisticsService" class="com.jili.right.service.impl.StatisticsServiceImpl"/>
+<bean id="TjService" class="com.jili.basedata.service.impl.TjServiceImpl"/>
+<bean id="FpdataService" class="com.jili.fpdata.service.impl.FpdataServiceImpl"/>
+<bean id="ModelService" class="com.jili.datadictionary.service.impl.ModelServiceImpl"/>
+<bean id="T5Service" class="com.jili.t5.service.impl.T5ServiceImpl"/>
+<bean id="VWService" class="com.vw.engine.service.impl.EngineServiceImpl"/>
+
+</beans>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jili.upload.DVP.mapper.DvpMapper" >
+ 	<select id="countDvp" parameterType="com.jili.upload.DVP.po.Dvp"   resultType="int">
+ 		select count(id) from DVP 	
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+ 	<select id="selectDvp" parameterType="com.jili.upload.DVP.po.Dvp"   resultType="com.jili.upload.DVP.po.Dvp">
+ 		select * from DVP 
+ 		<where>
+ 			<include refid ="select"></include>
+ 		</where>
+ 	</select>
+
+<sql id="select">
+		<if test="project!=null and project!=''">
+			project like '%${project}%'
+		</if>
+		<if test="projectNum!=null and projectNum!='' ">  
+         and projectNum like '%${projectNum}%'    
+        </if>  
+        
+</sql>
+<insert id="DvpAdd" parameterType="com.jili.upload.DVP.po.Dvp">
+	insert into DVP values(#{id},#{project},#{projectNum},#{projectTime},#{qTime},#{uploadTime},#{uploadPeople},#{uploadName},#{uploaduuid})
+</insert>
+
+</mapper>
